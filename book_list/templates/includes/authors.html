@@ -1,0 +1,51 @@
+{% block content %}
+<div class='row' id="page_authors" style="display:none">
+    <form class='col-md-4 col-12 px-sm-1' id="author_entry">
+        <input type='hidden' id='author_id' value='0' />
+        <div id='fields' class='px-1 px-sm-2 px-md-3 px-lg-4 py-2 bg-light rounded-top'>
+            <div class='form-group mb-1 mb-md-3'>
+                <label for='author_first_name' class='mr-sm-2 mb-0 mb-sm-1'>First Name(s)</label>
+                <input type='text' class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 author_field' id='author_first_name' />
+            </div>
+            <div class='form-group mb-1 mb-md-3'>
+                <label for='author_surname' class='mr-sm-2 mb-0 mb-sm-1'>Surname</label>
+                <input type='text' class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 author_field' id='author_surname' />
+            </div>
+            <div class='form-group mb-sm-1 mb-md-3' style='display:none'>
+                <div id='author_photo'></div>
+                <label for='author_photo_url' class='mr-sm-2 mb-0 mb-sm-1'>Photo URL</label>
+                <input type='text' class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 author_field' id='author_photo_url' />
+            </div>
+            <div class='form-group mb-sm-1 mb-md-3'>
+                <label for='author_date_birth' class='mr-sm-2 mb-0 mb-sm-1'>Born</label>
+                <input type='date' class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 author_field' id='author_date_birth' />
+            </div>
+            <div class='form-group mb-sm-1 mb-md-3'>
+                <label for='author_date_death' class='mr-sm-2 mb-0 mb-sm-1'>Died</label>
+                <input type='date' class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 author_field' id='author_date_death' />
+            </div>
+        </div>
+        <div id='controls' class='container-fluid px-4 py-1 bg-light rounded-bottom'>
+            <div class='row d-flex justify-content-between'>
+                <button type='button' class='btn btn-outline-primary btn-sm mt-1 ' id="btn_view_all_authors">View All</button>
+                <button type='button' class='btn btn-outline-primary btn-sm mt-1 ' id='btn_show_books' disabled>Show Books</button>
+                <div>
+                    <button type='button' class='btn btn-outline-primary btn-sm mt-1 ' id='btn_add_author' disabled>Add Author</button>
+                    <button type='button' class='btn btn-outline-primary btn-sm mt-1 ' id='btn_update_author' disabled>Update Author</button>
+                </div>
+            </div>
+            <div class='row d-flex justify-content-between mt-2'>
+                <button type='button' class='btn btn-outline-primary btn-sm mr-sm-2' id='btn_clear_form_author'>Clear Form</button>
+                <button type='button' class='btn btn-outline-danger btn-sm' id='btn_delete_author' disabled>Delete Author</button>
+            </div>
+        </div>
+    </form>
+    <table class='table table-hover col-md-8 col-12' id='author_list'>
+        <thead><tr><th>Surname</th><th>First Name(s)</th></tr></thead>
+        <tbody>
+            <tr><td></td><td></td></tr>
+        </tbody>
+    </table>
+</div>
+<script src="{{ url_for('static', filename='BookListAuthors.js') }}"></script>
+{% endblock %}

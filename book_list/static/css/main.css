@@ -1,0 +1,45 @@
+/* If the screen size is 1101px wide or more */
+@media screen and (min-width: 1101px) {
+    h1 {
+        font-size: 2rem;
+        font-weight: 300;
+    }
+}
+
+/* If the screen size is 1601px wide or more */
+@media screen and (min-width: 1601px) {
+    h1 {
+        font-size: 3rem;
+        font-weight: 400;
+    }
+}
+
+/* If the screen size is 1100px wide or less */
+@media screen and (max-width: 1100px) {
+    h1 {
+        font-size: 1.5rem;
+        font-weight: 300;
+    }
+    nav {
+        font-size: 0.75rem;
+        font-weight: 300;
+    }
+
+    #book_entry, #book_entry input, #book_entry button {
+        font-size: 0.75rem;
+        font-weight: 300;
+    }
+
+    #author_entry, #author_entry input, #author_entry button {
+        font-size: 0.75rem;
+        font-weight: 300;
+    }
+}
+
+button {
+    white-space: nowrap;
+}
+
+#page_books, #page_authors {
+    margin-top: 4px;
+}
