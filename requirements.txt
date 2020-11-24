@@ -70,7 +70,6 @@ python-dateutil==2.8.1
 python-dotenv==0.15.0
 python-editor==1.0.4
 pytz==2020.1
-pywin32==228
 pywinpty==0.5.7
 pyzmq==19.0.2
 qtconsole==4.7.7
