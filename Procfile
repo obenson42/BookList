@@ -1,1 +1,1 @@
-web: gunicorn book_list_web:app
+web: flask db upgrade; gunicorn task_list:'create_app()'
