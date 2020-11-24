@@ -14,7 +14,7 @@ class PublisherList {
     setContent(data) {
         this.allPublishers = [];
         for (let x of data) {
-            let pub = new Publisher(x["id"], x["name"]);
+            let publisher = new Publisher(x["id"], x["name"]);
             this.allPublishers.push(publisher);
         }
         this.displayList();
@@ -248,7 +248,7 @@ $(document).ready(function () {
     $("#publisher_list").delegate('tr', 'click', function () {
         gPublisherList.clearPrevHighlight();
         // fill inputs with values for clicked row
-        let id = parseInt($(this).attr("id").substring(4));
+        let id = parseInt($(this).attr("id").substring(9));
         for (let i = 0; i < gPublisherList.numPublishers; i++) {
             let publisher = gPublisherList.publisher(i);
             if (publisher['id'] === id) {

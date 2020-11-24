@@ -15,7 +15,7 @@ class Author(db.Model):
 
     def jsonify(self):
         json = '{"id":' + str(self.id)
-        json += ',"first_name":"' + self.title + '"'
+        json += ',"first_name":"' + self.first_name + '"'
         json += ',"surname":"' + self.surname + '"'
         json += ',"date_birth":"' + (str(self.date_birth) if isinstance(self.date_birth, datetime.date) else "") + '"'
         json += ',"date_death":"' + (str(self.date_death) if isinstance(self.date_death, datetime.date) else "") + '"'
@@ -51,11 +51,11 @@ class Publisher(db.Model):
     __tablename__ = 'publisher'
     id = Column(Integer, primary_key=True)
     name = Column(Text())
-    editions = relationship('Edition', backref=backref('edition', lazy=True))
+    editions = relationship('Edition') #, backref=backref('edition', lazy=True))
 
     def jsonify(self):
         json = '{"id":' + str(self.id)
-        json += ',"name":"' + self.title + '"'
+        json += ',"name":"' + self.name + '"'
         json += '}'
         return json
 

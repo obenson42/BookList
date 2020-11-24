@@ -161,6 +161,27 @@ def get_books_by_author():
             500,
             headers)
 
+# find books by publisher_id
+@bp.route('/books_by_publisher/', methods=['GET'])
+def get_books_by_publisher():
+    publisher_id = request.args.get('publisher_id')
+    publisher_id_num = int(publisher_id) if (isinstance(publisher_id, str) and (publisher_id != "")) else 0
+    if publisher_id_num > 0:
+        books = Book.query.join(Book.edition).join(Edition.publisher).filter(Publisher.id == publisher_id_num)
+        json = jsonifyList(books, "books")
+        headers = {"Content-Type": "application/json"}
+        return make_response(
+            json,
+            200,
+            headers)
+    else:
+        json = '{"author_id":' + author_id + ', "operation":"get", "status":"fail"}'
+        headers = {"Content-Type": "application/json"}
+        return make_response(
+            json,
+            500,
+            headers)
+
 ## author routes
 # get all authors
 @bp.route('/authors/', methods=['GET'])

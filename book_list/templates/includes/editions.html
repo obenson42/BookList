@@ -1,0 +1,39 @@
+{% block content %}
+<div class='row' id="page_editions">
+    <form class='col-md-4 col-12 px-sm-1' id="edition_entry">
+        <input type='hidden' id='edition_id' value='0' />
+        <input type='hidden' id='edition_book_id' value='0' />
+        <input type='hidden' id='edition_publisher_id' value='0' />
+        <div id='fields' class='px-1 px-sm-2 px-md-3 px-lg-4 py-2 bg-light rounded-top'>
+            <div class='form-group mb-1 mb-md-3'>
+                <label for='edition_isbn' class='mr-sm-2 mb-0 mb-sm-1'>ISBN</label>
+                <input type='text' class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 edition_field' id='edition_isbn' />
+            </div>
+            <div class='form-group mb-sm-1 mb-md-3'>
+                <label for='edition_date_published' class='mr-sm-2 mb-0 mb-sm-1'>Published</label>
+                <input type='date' class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 author_field' id='edition_date_published' />
+            </div>
+        </div>
+        <div id='controls' class='container-fluid px-4 py-1 bg-light rounded-bottom'>
+            <div class='row d-flex justify-content-between'>
+                <button type='button' class='btn btn-outline-primary btn-sm mt-1 ' id="btn_view_all_editions">View All</button>
+                <div>
+                    <button type='button' class='btn btn-outline-primary btn-sm mt-1 ' id='btn_add_edition' disabled>Add Edition</button>
+                    <button type='button' class='btn btn-outline-primary btn-sm mt-1 ' id='btn_update_edition' disabled>Update Edition</button>
+                </div>
+            </div>
+            <div class='row d-flex justify-content-between mt-2'>
+                <button type='button' class='btn btn-outline-primary btn-sm mr-sm-2' id='btn_clear_form_edition'>Clear Form</button>
+                <button type='button' class='btn btn-outline-danger btn-sm' id='btn_delete_edition' disabled>Delete Edition</button>
+            </div>
+        </div>
+    </form>
+    <table class='table table-hover col-md-8 col-12' id='edition_list'>
+        <thead><tr><th>ISBN</th><th>Published</th></tr></thead>
+        <tbody>
+            <tr><td></td><td></td></tr>
+        </tbody>
+    </table>
+</div>
+<script src="{{ url_for('static', filename='BookListEditions.js') }}"></script>
+{% endblock %}

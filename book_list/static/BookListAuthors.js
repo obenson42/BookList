@@ -31,7 +31,7 @@ class AuthorList {
         $(btn).html(
             '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...'
         );
-        let self = this;
+        const self = this;
         $.getJSON("/authors/", function (data) {
             self.setContent(data["authors"]);
         })
@@ -98,8 +98,8 @@ class AuthorList {
     }
 
     deleteAuthor() {
-        let authorID = $("#author_id").val();
-        let self = this;
+        const authorID = $("#author_id").val();
+        const self = this;
         $.ajax({
             method: "DELETE",
             url: "/author/?" + $.param({ "id": authorID }),
@@ -135,7 +135,7 @@ class AuthorList {
 
     clearPrevHighlight() {
         // clear previous row hightlight if there was one
-        let prevID = $("#author_id").val();
+        const prevID = $("#author_id").val();
         if (prevID !== "0") {
             // un-highlight row
             $("#author" + prevID + " td").each(function () {

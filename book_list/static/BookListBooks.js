@@ -10,16 +10,6 @@ class Book {
     }
 }
 
-class Edition {
-    constructor(id, pub_date, isbn, bookID, publisherID) {
-        this.id = id;
-        this.pub_date = pub_date;
-        this.isbn = isbn;
-        this.bookID = bookID;
-        this.publisherID = publisherID;
-    }
-}
-
 class BookList {
     constructor() {
         this.allBooks = [];
@@ -192,7 +182,7 @@ class BookList {
         const bookAuthorFirstName = $("#book_author_first_name").val();
         const bookAuthorSurname = $("#book_author_surname").val();
         const bookYear = $("#book_year").val();
-        const bookAuthorID = $("book_author_id").val();
+        const bookAuthorID = $("#book_author_id").val();
         $("#btn_search").prop("disabled", (bookTitle === "" && bookAuthorFirstName === "" && bookAuthorSurname === "" && bookYear === ""));
         $("#btn_add_book").prop("disabled", (bookID !== "0" || bookTitle === "" || bookAuthorFirstName === "" || bookAuthorSurname === "" || bookYear === ""));
         $("#btn_update_book").prop("disabled", (bookID === "0"));
@@ -299,6 +289,20 @@ class BookList {
             })
                 .fail(function () {
                     alert("Problem in loading books by author");
+                });
+        }
+    }
+
+    showBooksByPublisher(publisherID) {
+        this.clearPrevHighlight();
+        this.clearForm();
+        if (publisherID !== 0) {
+            const self = this;
+            $.getJSON("/books_by_publisher/?" + $.param({ "publisher_id": publisherID }), function (data) {
+                self.setContent(data["books"]);
+            })
+                .fail(function () {
+                    alert("Problem in loading books by publisher");
                 });
         }
     }

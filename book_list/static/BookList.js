@@ -1,17 +1,21 @@
-function goPageBook(authorID) {
+function goPageBook(authorID, publisherID) {
     $("#page_books").show("slow");
     $("#page_authors").hide("slow");
     $("#page_publishers").hide("slow");
-    $("#link_books, #link_authors").toggleClass("active");
-    if(authorID !== undefined)
+    $("#link_authors, #link_publishers").removeClass("active");
+    $("#link_books").addClass("active");
+    if(authorID)
         gBookList.showBooksByAuthor(authorID);
+    if(publisherID)
+        gBookList.showBooksByPublisher(publisherID);
 }
 
 function goPageAuthor(authorID) {
     $("#page_books").hide("slow");
     $("#page_authors").show("slow");
     $("#page_publishers").hide("slow");
-    $("#link_books, #link_authors").toggleClass("active");
+    $("#link_books, #link_publishers").removeClass("active");
+    $("#link_authors").addClass("active");
     if (authorID !== undefined)
         gAuthorList.showAuthor(authorID);
 }
@@ -20,6 +24,8 @@ function goPagePublisher(bookID, authorID) {
     $("#page_books").hide("slow");
     $("#page_authors").hide("slow");
     $("#page_publishers").show("slow");
+    $("#link_books, #link_authors").removeClass("active");
+    $("#link_publishers").addClass("active");
     if(bookID !== undefined)
         gPublisherList.showPublishersByBook(bookID);
     else if(authorID !== undefined)
