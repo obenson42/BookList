@@ -1,13 +1,22 @@
 // classes
 class Book {
-    constructor(id, title, authorFirstName, authorSurname, year, isbn, authorID) {
+    constructor(id, title, authorFirstName, authorSurname, year, authorID) {
         this.id = id;
         this.title = title;
         this.authorFirstName = authorFirstName;
         this.authorSurname = authorSurname;
         this.year = year;
-        this.isbn = isbn;
         this.authorID = authorID;
+    }
+}
+
+class Edition {
+    constructor(id, pub_date, isbn, bookID, publisherID) {
+        this.id = id;
+        this.pub_date = pub_date;
+        this.isbn = isbn;
+        this.bookID = bookID;
+        this.publisherID = publisherID;
     }
 }
 
@@ -19,7 +28,7 @@ class BookList {
     setContent(data) {
         this.allBooks = [];
         for (let x of data) {
-            let book = new Book(x["id"], x["title"], x["author_first_name"], x["author_surname"], x["year"], x["isbn"], x["author_id"]);
+            let book = new Book(x["id"], x["title"], x["author_first_name"], x["author_surname"], x["year"], x["author_id"]);
             this.allBooks.push(book);
         }
         this.displayList();
@@ -55,12 +64,11 @@ class BookList {
         let bookAuthorFirstName = $("#book_author_first_name").val();
         let bookAuthorSurname = $("#book_author_surname").val();
         let bookYear = $("#book_year").val();
-        let bookISBN = $("#book_isbn").val().trim();
         let self = this;
         $.ajax({
             method: "PUSH",
             url: "/book/",
-            data: { id: 0, title: bookTitle, author_first_name: bookAuthorFirstName, author_surname: bookAuthorSurname, year: bookYear, isbn: bookISBN },
+            data: { id: 0, title: bookTitle, author_first_name: bookAuthorFirstName, author_surname: bookAuthorSurname, year: bookYear},
             dataType: "json"
         })
             .done(function (result) {
@@ -80,12 +88,11 @@ class BookList {
         let bookAuthorFirstName = $("#book_author_first_name").val();
         let bookAuthorSurname = $("#book_author_surname").val();
         let bookYear = $("#book_year").val();
-        let bookISBN = $("#book_isbn").val();
         let self = this;
         $.ajax({
             method: "PUT",
             url: "/book/",
-            data: { id: bookID, title: bookTitle, author_first_name: bookAuthorFirstName, author_surname: bookAuthorSurname, year: bookYear, isbn: bookISBN },
+            data: { id: bookID, title: bookTitle, author_first_name: bookAuthorFirstName, author_surname: bookAuthorSurname, year: bookYear },
             dataType: "json"
         })
             .done(function (result) {
@@ -130,9 +137,8 @@ class BookList {
         let bookAuthorFirstName = $("#book_author_first_name").val();
         let bookAuthorSurname = $("#book_author_surname").val();
         let bookYear = $("#book_year").val();
-        let bookISBN = $("#book_isbn").val();
         let self = this;
-        $.getJSON("/search/?title=" + bookTitle + "&author_first_name=" + bookAuthorFirstName + "&author_surname=" + bookAuthorSurname + "&year=" + bookYear + "&isbn=" + bookISBN, function (data) {
+        $.getJSON("/books_search/?title=" + bookTitle + "&author_first_name=" + bookAuthorFirstName + "&author_surname=" + bookAuthorSurname + "&year=" + bookYear, function (data) {
             self.setContent(data["books"]);
         })
             .fail(function () {
@@ -158,7 +164,6 @@ class BookList {
         $("#book_author_first_name").val("");
         $("#book_author_surname").val("");
         $("#book_year").val("");
-        $("#book_isbn").val("");
         // disable buttons dependent on a table row having been clicked
         $("#btn_search").prop("disabled", true);
         $("#btn_add_book").prop("disabled", true);
@@ -182,14 +187,14 @@ class BookList {
 
     // called by inputs when text is entered, updates which buttons are disabled
     fieldsChanged() {
-        let bookID = $("#book_id").val();
-        let bookTitle = $("#book_title").val();
-        let bookAuthorFirstName = $("#book_author_first_name").val();
-        let bookAuthorSurname = $("#book_author_surname").val();
-        let bookYear = $("#book_year").val();
-        let bookISBN = $("#book_isbn").val();
-        $("#btn_search").prop("disabled", (bookTitle === "" && bookAuthorFirstName === "" && bookAuthorSurname === "" && bookYear === "" && bookISBN === ""));
-        $("#btn_add_book").prop("disabled", (bookID !== "0" || bookTitle === "" || bookAuthorFirstName === "" || bookAuthorSurname === "" || bookYear === "" || bookISBN === ""));
+        const bookID = $("#book_id").val();
+        const bookTitle = $("#book_title").val();
+        const bookAuthorFirstName = $("#book_author_first_name").val();
+        const bookAuthorSurname = $("#book_author_surname").val();
+        const bookYear = $("#book_year").val();
+        const bookAuthorID = $("book_author_id").val();
+        $("#btn_search").prop("disabled", (bookTitle === "" && bookAuthorFirstName === "" && bookAuthorSurname === "" && bookYear === ""));
+        $("#btn_add_book").prop("disabled", (bookID !== "0" || bookTitle === "" || bookAuthorFirstName === "" || bookAuthorSurname === "" || bookYear === ""));
         $("#btn_update_book").prop("disabled", (bookID === "0"));
     }
 
@@ -197,14 +202,17 @@ class BookList {
     // also update available buttons
     authorLookupFirstName() {
         this.fieldsChanged();
-        let bookAuthorFirstName = $("#book_author_first_name").val();
+        const bookAuthorFirstName = $("#book_author_first_name").val();
         if (bookAuthorFirstName.length > 3) {
             let pos = bookAuthorFirstName.length;
-            $.getJSON("/author_by_name/?" + $.param({ "first_name": bookAuthorFirstName, "surname": "" }), function (data) {
-                if ((data !== "") && (data['first_name'] || data['surname'])) {
-                    $("#book_author_first_name").val(data['first_name']);
-                    $("#book_author_surname").val(data['surname']);
-                    $("#book_author_first_name").caretTo(pos);
+            $.getJSON("/author_search/?" + $.param({ "first_name": bookAuthorFirstName, "surname": "" }), function (data) {
+                const x = data["authors"][0];
+                if (x) {
+                    const author = new Author(x["id"], x["first_name"], x["surname"], x["date_birth"], x["date_death"]);
+                    $("#book_author_id").val(x.id);
+                    $("#book_author_first_name").val(x.first_name);
+                    $("#book_author_surname").val(x.surname);
+                    $("#book_author_firstname").caretTo(pos);
                 }
             })
                 .fail(function () {
@@ -217,13 +225,16 @@ class BookList {
     // also update available buttons
     authorLookupSurname() {
         this.fieldsChanged();
-        let bookAuthorSurname = $("#book_author_surname").val();
+        const bookAuthorSurname = $("#book_author_surname").val();
         if (bookAuthorSurname.length > 3) {
             let pos = bookAuthorSurname.length;
-            $.getJSON("/author_by_name/?" + $.param({ "first_name": "", "surname": bookAuthorSurname }), function (data) {
-                if ((data !== "") && (data['first_name'] || data['surname'])) {
-                    $("#book_author_first_name").val(data['first_name']);
-                    $("#book_author_surname").val(data['surname']);
+            $.getJSON("/author_search/?" + $.param({ "first_name": "", "surname": bookAuthorSurname }), function (data) {
+                const x = data["authors"][0];
+                if (x) {
+                    const author = new Author(x["id"], x["first_name"], x["surname"],  x["date_birth"], x["date_death"]);
+                    $("#book_author_id").val(x.id);
+                    $("#book_author_first_name").val(x.first_name);
+                    $("#book_author_surname").val(x.surname);
                     $("#book_author_surname").caretTo(pos);
                 }
             })
@@ -237,8 +248,12 @@ class BookList {
     displayList() {
         let out = "";
         for (let i = 0; i < this.allBooks.length; i++) {
-            let book = this.allBooks[i];
-            out += '<tr id="book' + book.id + '"><td>' + book.title + '</td><td>' + book.authorFirstName + ' ' + book.authorSurname + '</td><td>' + book.year + '</td><td>' + book.isbn + '</td></tr>';
+            const book = this.allBooks[i];
+            out += '<tr id="book' + book.id + '">';
+            out += '<td>' + book.title + '</td>';
+            out += '<td>' + book.authorFirstName + ' ' + book.authorSurname + '</td>';
+            out += '<td>' + book.year + '</td>';
+            out += '</tr>';
         }
         $("#book_list").find("tbody").empty();
         $("#book_list").find("tbody").append(out);
@@ -253,7 +268,6 @@ class BookList {
         $("#book_author_first_name").val(book.authorFirstName);
         $("#book_author_surname").val(book.authorSurname);
         $("#book_year").val(book.year);
-        $("#book_isbn").val(book.isbn);
         // update which buttons are disabled
         $("#btn_add_book").prop("disabled", true);
         $("#btn_update_book").prop("disabled", true); // can't update until user changes something
@@ -279,7 +293,7 @@ class BookList {
         this.clearPrevHighlight();
         this.clearForm();
         if (authorID !== 0) {
-            let self = this;
+            const self = this;
             $.getJSON("/books_by_author/?" + $.param({ "author_id": authorID }), function (data) {
                 self.setContent(data["books"]);
             })
@@ -305,9 +319,6 @@ $(document).ready(function () {
         gBookList.authorLookupSurname();
     });
     $("#book_year").on("input", function () {
-        gBookList.fieldsChanged();
-    });
-    $("#book_isbn").on("input", function () {
         gBookList.fieldsChanged();
     });
     // add events to buttons

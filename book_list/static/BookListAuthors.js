@@ -1,10 +1,9 @@
 // classes
 class Author {
-    constructor(id, firstName, surname, photo_url, date_birth, date_death) {
+    constructor(id, firstName, surname, date_birth, date_death) {
         this.id = id;
         this.firstName = firstName;
         this.surname = surname;
-        this.photo_url = photo_url;
         this.date_birth = date_birth;
         this.date_death = date_death;
     }
@@ -18,7 +17,7 @@ class AuthorList {
     setContent(data) {
         this.allAuthors = [];
         for (let x of data) {
-            let author = new Author(x["id"], x["first_name"], x["surname"], x["photo_url"], x["date_birth"], x["date_death"]);
+            const author = new Author(x["id"], x["first_name"], x["surname"], x["date_birth"], x["date_death"]);
             this.allAuthors.push(author);
         }
         this.displayList();
@@ -167,11 +166,16 @@ class AuthorList {
         let authorFirstName = $("#author_first_name").val();
         if (authorFirstName.length > 3) {
             let pos = authorFirstName.length;
-            $.getJSON("/author_by_name/?" + $.param({ "first_name": authorFirstName, "surname": "" }), function (data) {
-                if ((data !== "") && (data['first_name'] || data['surname'])) {
-                    $("#author_first_name").val(data['first_name']);
-                    $("#author_surname").val(data['surname']);
-                    $("#author_first_name").caretTo(pos);
+            $.getJSON("/author_search/?" + $.param({ "first_name": authorFirstName, "surname": "" }), function (data) {
+                const x = data["authors"][0];
+                if (x) {
+                    const author = new Author(x["id"], x["first_name"], x["surname"], x["date_birth"], x["date_death"]);
+                    $("#author_id").val(x.id);
+                    $("#author_first_name").val(x.first_name);
+                    $("#author_surname").val(x.surname);
+                    $("#author_date_birth").val(x.date_birth);
+                    $("#author_date_death").val(x.date_death);
+                    $("#author_firstname").caretTo(pos);
                 }
             })
                 .fail(function () {
@@ -189,11 +193,16 @@ class AuthorList {
         let authorSurname = $("#author_surname").val();
         if (authorSurname.length > 3) {
             let pos = authorSurname.length;
-            $.getJSON("/author_by_name/?" + $.param({ "first_name": "", "surname": authorSurname }), function (data) {
-                if ((data !== "") && (data['first_name'] || data['surname'])) {
-                    $("#author_first_name").val(data['first_name']);
-                    $("#author_surname").val(data['surname']);
-                    $("#author_surname").caretTo(pos);
+            $.getJSON("/author_search/?" + $.param({ "first_name": "", "surname": authorSurname }), function (data) {
+                const x = data["authors"][0];
+                if (x) {
+                    const author = new Author(x["id"], x["first_name"], x["surname"], x["date_birth"], x["date_death"]);
+                    $("#author_id").val(x.id);
+                    $("#author_first_name").val(x.first_name);
+                    $("#author_surname").val(x.surname);
+                    $("#author_date_birth").val(x.date_birth);
+                    $("#author_date_death").val(x.date_death);
+                    $("#author_firstname").caretTo(pos);
                 }
             })
                 .fail(function () {
@@ -251,7 +260,7 @@ class AuthorList {
             let self = this;
             this.getAuthorFromDbByID(id).then(function (data) {
                 if (data !== undefined) {
-                    author = new Author(data['id'], data['first_name'], data['surname'], data['photo_url'], data['date_birth'], data['date_death']);
+                    author = new Author(data['id'], data['first_name'], data['surname'], data['date_birth'], data['date_death']);
                     self.allAuthors.push(author);
                     self.displayList();
                     self.showAuthor(id);
@@ -266,7 +275,7 @@ class AuthorList {
         if (id !== undefined) {
             return $.getJSON("/author/?" + $.param({ "id": id }))
                 .fail(function () {
-                    alert("Problem in author lookup by id");
+                    alert("Problem in author lookup by id=" + id);
                 });
         } else {
             return undefined;

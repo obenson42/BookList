@@ -10,15 +10,20 @@ migrate = Migrate()
 def create_app():
     app=Flask(__name__)
     app.config.from_mapping(
-        SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev_key'
+        SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev_key',
+        SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+            'sqlite:///' + os.path.join(app.instance_path, 'book_list.sqlite'),
+        SQLALCHEMY_TRACK_MODIFICATIONS = False
     )
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'sqlite:///' + os.path.join(app.instance_path, 'book_list.sqlite'),
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     db.init_app(app)
     migrate.init_app(app, db)
 
+    #db.reflect()
+    #db.drop_all()
+
     from . import models
+    from . import book_list
+    app.register_blueprint(book_list.bp)
 
     return app

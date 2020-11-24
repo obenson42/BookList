@@ -18,10 +18,16 @@
     <header class="container-fluid bg-primary">
         <h1 class="text-light pb-1">Simple Book List Web App</h1>
     </header>
+    {% for message in get_flashed_messages() %}
+      <div class="alert alert-danger">
+        <p class="lead">{{ message }}</p>
+      </div>
+    {% endfor %}
     <nav>
         <ul class="nav nav-tabs">
             <li class="nav-item"><a class="nav-link active" href="#" id="link_books">Books</a></li>
             <li class="nav-item"><a class="nav-link" href="#" id="link_authors">Authors</a></li>
+            <li class="nav-item"><a class="nav-link" href="#" id="link_publishers">Publishers</a></li>
         </ul>
     </nav>
     {%block content%}

@@ -2,6 +2,7 @@
 <div class='row' id="page_books">
     <form class='col-md-4 col-12 px-sm-1' id="book_entry">
         <input type='hidden' id='book_id' value='0' />
+        <input type='hidden' id='book_author_id' value='0' />
         <div id='fields' class='px-1 px-sm-2 px-md-3 px-lg-4 py-2 bg-light rounded-top'>
             <div class='form-group mb-1 mb-md-3'>
                 <label for='book_title' class='mr-sm-2 mb-0 mb-sm-1'>Title</label>
@@ -18,10 +19,6 @@
             <div class='form-group mb-1 mb-md-3'>
                 <label for='book_year' class='mr-sm-2 mb-0 mb-sm-1'>Year</label>
                 <input type='number' class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 book_field' id='book_year' maxlength='4' />
-            </div>
-            <div class='form-group mb-1 mb-md-3'>
-                <label for='book_isbn' class='mr-sm-2 mb-0 mb-sm-1'>ISBN</label>
-                <input type='text' class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 book_field' id='book_isbn' maxlength='13' />
             </div>
         </div>
         <div id='controls' class='container-fluid px-4 py-1 bg-light rounded-bottom'>
@@ -40,7 +37,7 @@
         </div>
     </form>
     <table class='table table-hover col-md-8 col-12' id='book_list'>
-        <thead><tr><th>Title</th><th>Author</th><th>Date</th><th>ISBN</th></tr></thead>
+        <thead><tr><th>Title</th><th>Author</th><th>Date</th></tr></thead>
         <tbody>
             <tr><td></td><td></td><td></td><td></td></tr>
         </tbody>
