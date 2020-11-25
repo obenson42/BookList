@@ -229,8 +229,12 @@ $(document).ready(function () {
     $("#btn_view_all_publishers").click(function () {
         gPublisherList.viewAll(this);
     });
-    $("#btn_search").click(function () {
-        gPublisherList.search(this);
+    $("#btn_show_books").click(function () {
+        let publisherID = $("#publisher_id").val();
+        if (publisherID !== "") {
+            publisherID = parseInt(publisherID);
+            goPageBook(null, publisherID)
+        }
     });
     $("#btn_add_publisher").click(function () {
         gPublisherList.addPublisher();
