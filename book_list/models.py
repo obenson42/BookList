@@ -6,7 +6,7 @@ from book_list import db
 
 class Author(db.Model):
     __tablename__ = 'author'
-    id = Column(Integer, Sequence('id_seq'), primary_key=True)
+    id = Column(Integer, primary_key=True)
     first_name = Column(Text(), nullable=False)
     surname = Column(Text(), nullable=False)
     date_birth = Column(Date, nullable=True)
