@@ -1,5 +1,6 @@
 function goPageBook(authorID, publisherID) {
     $("#page_books").show("slow");
+    $("#page_editions").show("slow");
     $("#page_authors").hide("slow");
     $("#page_publishers").hide("slow");
     $("#link_authors, #link_publishers").removeClass("active");
@@ -12,6 +13,7 @@ function goPageBook(authorID, publisherID) {
 
 function goPageAuthor(authorID) {
     $("#page_books").hide("slow");
+    $("#page_editions").hide("slow");
     $("#page_authors").show("slow");
     $("#page_publishers").hide("slow");
     $("#link_books, #link_publishers").removeClass("active");
@@ -22,6 +24,7 @@ function goPageAuthor(authorID) {
 
 function goPagePublisher(bookID, authorID) {
     $("#page_books").hide("slow");
+    $("#page_editions").hide("slow");
     $("#page_authors").hide("slow");
     $("#page_publishers").show("slow");
     $("#link_books, #link_authors").removeClass("active");
