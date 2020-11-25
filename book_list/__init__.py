@@ -19,9 +19,6 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
 
-    #db.reflect()
-    #db.drop_all()
-
     from . import models
     from . import book_list
     app.register_blueprint(book_list.bp)
