@@ -1,3 +1,4 @@
+import os
 from flask import (
     Blueprint, flash, redirect, render_template, make_response, request, url_for, send_from_directory
 )
@@ -7,10 +8,8 @@ import datetime
 from book_list import db, cache
 from book_list.models import Author, Book, Publisher, Edition
 
-#from book_list_web import FrontEnd
-
 bp = Blueprint('book_list', __name__)
-#booklist = FrontEnd(db)
+
 
 @bp.route('/')
 def home():
