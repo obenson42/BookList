@@ -384,7 +384,7 @@ function chechForUpdatesBooks() {
         if(data["last_update"] !== "None") {
             const lastDbUpdate = Date.parse(data["last_update"]);
             if(lastDbUpdate - gLastUpdateBooks > 10) {
-                viewAll();
+                gBookList.viewAll();
             }
         }
         gUpdateBooksInterval = setInterval(chechForUpdatesBooks, 5000);
