@@ -4,7 +4,7 @@ from flask import (
 from sqlalchemy import or_
 import datetime
 
-from book_list import db
+from book_list import db, cache
 from book_list.models import Author, Book, Publisher, Edition
 
 #from book_list_web import FrontEnd
@@ -48,6 +48,9 @@ def book_create():
     # add the book
     db.session.add(Book(title=title, year=year_num, author_id=author_id))
     db.session.commit()
+    # chache time of this change
+    cache.set('last_update_books', datetime.datetime.now())
+    # return success
     json = '{"operation":"create book", "status":"success"}'
     headers = {"Content-Type": "application/json"}
     return make_response(
@@ -74,6 +77,9 @@ def book_update():
         Book.query.filter(Book.id==id_num).\
             update({"title":title, "year":year_num, "author_id":author_id})
         db.session.commit()
+        # chache time of this change
+        cache.set('last_update_books', datetime.datetime.now())
+        # return success
         json = '{"id":' + str(id_num) + ', "operation":"update book", "status":"success"}'
         headers = {"Content-Type": "application/json"}
         return make_response(
@@ -116,7 +122,6 @@ def books_search():
     title = request.args.get('title')
     if title != "":
         title = "%" + title + "%"
-        print(title)
     year = request.args.get('year')
     year_num = int(year) if (isinstance(year, str) and (year != "")) else 0
     author_first_name = request.args.get('author_first_name')
@@ -509,6 +514,18 @@ def editions_search():
             headers)
 
 ### extra routes
+@bp.route('/last_update_books/')
+def last_update_books():
+    last_update = cache.get('last_update_books')
+    if last_update != None:
+        last_update = last_update.isoformat()
+    json = '{ "last_update": "%s" }' % (last_update,)
+    headers = {"Content-Type": "application/json"}
+    return make_response(
+        json,
+        200,
+        headers)
+
 @bp.route('/favicon.ico') 
 def favicon(): 
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
@@ -524,7 +541,6 @@ def get_author_by_name(first_name, surname, create):
         author = Author(first_name=first_name, surname=surname)
         db.session.add(author)
         db.session.commit()
-        print("new author id=", author.id)
         return author
     else:
         return None

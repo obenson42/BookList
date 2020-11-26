@@ -18,21 +18,24 @@ class BookList {
     setContent(data) {
         this.allBooks = [];
         for (let x of data) {
-            let book = new Book(x["id"], x["title"], x["author_first_name"], x["author_surname"], x["year"], x["author_id"]);
+            const book = new Book(x["id"], x["title"], x["author_first_name"], x["author_surname"], x["year"], x["author_id"]);
             this.allBooks.push(book);
         }
         this.displayList();
+        gLastUpdateBooks = Date.now();
     }
 
     // button methods
     viewAll(btn) {
-        // disable button
-        $(btn).prop("disabled", true);
-        // add spinner to button
-        $(btn).html(
-            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...'
-        );
-        let self = this;
+        if(btn) {
+            // disable button
+            $(btn).prop("disabled", true);
+            // add spinner to button
+            $(btn).html(
+                '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...'
+            );
+        }
+        const self = this;
         $.getJSON("/books/", function (data) {
             self.setContent(data["books"]);
         })
@@ -40,21 +43,23 @@ class BookList {
                 alert("Problem getting book list");
             })
             .always(function () {
-                // remove spinner to button
-                $(btn).html(
-                    'View All'
-                );
-                // enable button
-                $(btn).prop("disabled", false);
+                if(btn) {
+                    // remove spinner to button
+                    $(btn).html(
+                        'View All'
+                    );
+                    // enable button
+                    $(btn).prop("disabled", false);
+                }
             });
     }
 
     addBook() {
-        let bookTitle = $("#book_title").val();
-        let bookAuthorFirstName = $("#book_author_first_name").val();
-        let bookAuthorSurname = $("#book_author_surname").val();
-        let bookYear = $("#book_year").val();
-        let self = this;
+        const bookTitle = $("#book_title").val();
+        const bookAuthorFirstName = $("#book_author_first_name").val();
+        const bookAuthorSurname = $("#book_author_surname").val();
+        const bookYear = $("#book_year").val();
+        const self = this;
         $.ajax({
             method: "PUSH",
             url: "/book/",
@@ -73,12 +78,12 @@ class BookList {
     }
 
     updateBook() {
-        let bookID = $("#book_id").val();
-        let bookTitle = $("#book_title").val();
-        let bookAuthorFirstName = $("#book_author_first_name").val();
-        let bookAuthorSurname = $("#book_author_surname").val();
-        let bookYear = $("#book_year").val();
-        let self = this;
+        const bookID = $("#book_id").val();
+        const bookTitle = $("#book_title").val();
+        const bookAuthorFirstName = $("#book_author_first_name").val();
+        const bookAuthorSurname = $("#book_author_surname").val();
+        const bookYear = $("#book_year").val();
+        const self = this;
         $.ajax({
             method: "PUT",
             url: "/book/",
@@ -96,11 +101,11 @@ class BookList {
             });
     }
 
-    deleteBook() {
-        let bookID = $("#book_id").val();
-        let self = this;
+    deconsteBook() {
+        const bookID = $("#book_id").val();
+        const self = this;
         $.ajax({
-            method: "DELETE",
+            method: "DEconstE",
             url: "/book/?" + $.param({ "id": bookID }),
             dataType: "json"
         })
@@ -111,7 +116,7 @@ class BookList {
                 self.viewAll();
             })
             .fail(function () {
-                alert("Problem deleting book");
+                alert("Problem deconsting book");
             });
     }
 
@@ -123,11 +128,11 @@ class BookList {
             '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...'
         );
         // get field values and send to search
-        let bookTitle = $("#book_title").val();
-        let bookAuthorFirstName = $("#book_author_first_name").val();
-        let bookAuthorSurname = $("#book_author_surname").val();
-        let bookYear = $("#book_year").val();
-        let self = this;
+        const bookTitle = $("#book_title").val();
+        const bookAuthorFirstName = $("#book_author_first_name").val();
+        const bookAuthorSurname = $("#book_author_surname").val();
+        const bookYear = $("#book_year").val();
+        const self = this;
         $.getJSON("/books_search/?title=" + bookTitle + "&author_first_name=" + bookAuthorFirstName + "&author_surname=" + bookAuthorSurname + "&year=" + bookYear, function (data) {
             self.setContent(data["books"]);
         })
@@ -158,7 +163,7 @@ class BookList {
         $("#btn_search").prop("disabled", true);
         $("#btn_add_book").prop("disabled", true);
         $("#btn_update_book").prop("disabled", true);
-        $("#btn_delete_book").prop("disabled", true);
+        $("#btn_deconste_book").prop("disabled", true);
         // disable link to author page
         $("#link_current_author").removeClass("text-primary");
         $("#link_current_author").addClass("text-muted");
@@ -166,7 +171,7 @@ class BookList {
 
     clearPrevHighlight() {
         // clear previous row hightlight if there was one
-        let prevID = $("#book_id").val();
+        const prevID = $("#book_id").val();
         if (prevID !== "0") {
             // un-highlight row
             $("#book" + prevID + " td").each(function () {
@@ -194,7 +199,7 @@ class BookList {
         this.fieldsChanged();
         const bookAuthorFirstName = $("#book_author_first_name").val();
         if (bookAuthorFirstName.length > 3) {
-            let pos = bookAuthorFirstName.length;
+            const pos = bookAuthorFirstName.length;
             $.getJSON("/author_search/?" + $.param({ "first_name": bookAuthorFirstName, "surname": "" }), function (data) {
                 const x = data["authors"][0];
                 if (x) {
@@ -217,7 +222,7 @@ class BookList {
         this.fieldsChanged();
         const bookAuthorSurname = $("#book_author_surname").val();
         if (bookAuthorSurname.length > 3) {
-            let pos = bookAuthorSurname.length;
+            const pos = bookAuthorSurname.length;
             $.getJSON("/author_search/?" + $.param({ "first_name": "", "surname": bookAuthorSurname }), function (data) {
                 const x = data["authors"][0];
                 if (x) {
@@ -249,7 +254,7 @@ class BookList {
         $("#book_list").find("tbody").append(out);
         // disable buttons dependent on a table row having been clicked
         $("#btn_update_book").prop("disabled", true);
-        $("#btn_delete_book").prop("disabled", true);
+        $("#btn_deconste_book").prop("disabled", true);
     }
 
     fillFieldsFromBook(book) {
@@ -261,7 +266,7 @@ class BookList {
         // update which buttons are disabled
         $("#btn_add_book").prop("disabled", true);
         $("#btn_update_book").prop("disabled", true); // can't update until user changes something
-        $("#btn_delete_book").prop("disabled", false);
+        $("#btn_deconste_book").prop("disabled", false);
         // enable link to author page
         $("#link_current_author").removeClass("text-muted");
         $("#link_current_author").addClass("text-primary");
@@ -341,14 +346,14 @@ $(document).ready(function () {
     $("#btn_clear_form_book").click(function () {
         gBookList.clearForm();
     });
-    $("#btn_delete_book").click(function () {
-        gBookList.deleteBook();
+    $("#btn_deconste_book").click(function () {
+        gBookList.deconsteBook();
     });
     $("#link_current_author").click(function () {
         let bookID = $("#book_id").val();
         if (bookID !== "") {
             bookID = parseInt(bookID);
-            let book = gBookList.bookByID(bookID);
+            const book = gBookList.bookByID(bookID);
             if (book !== undefined) {
                 goPageAuthor(book.authorID)
             }
@@ -358,9 +363,9 @@ $(document).ready(function () {
     $("#book_list").delegate('tr', 'click', function () {
         gBookList.clearPrevHighlight();
         // fill inputs with values for clicked row
-        let id = parseInt($(this).attr("id").substring(4));
+        const id = parseInt($(this).attr("id").substring(4));
         for (let i = 0; i < gBookList.numBooks; i++) {
-            let book = gBookList.book(i);
+            const book = gBookList.book(i);
             if (book['id'] === id) {
                 gBookList.fillFieldsFromBook(book);
                 // highlight row clicked on so user can check they clicked the right one
@@ -372,3 +377,22 @@ $(document).ready(function () {
         }
     });
 });
+
+function chechForUpdatesBooks() {
+    $.getJSON("/last_update_books/", function (data) {
+        clearInterval(gUpdateBooksInterval);
+        if(data["last_update"] !== "None") {
+            const lastDbUpdate = Date.parse(data["last_update"]);
+            if(lastDbUpdate - gLastUpdateBooks > 10) {
+                viewAll();
+            }
+        }
+        gUpdateBooksInterval = setInterval(chechForUpdatesBooks, 5000);
+    })
+    .fail(function () {
+        alert("Problem in update check");
+        clearInterval(gUpdateBooksInterval);
+    });
+}
+var gLastUpdateBooks = Date.now();
+var gUpdateBooksInterval = setInterval(chechForUpdatesBooks, 5000);
