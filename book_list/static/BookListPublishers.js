@@ -14,7 +14,7 @@ class PublisherList {
     setContent(data) {
         this.allPublishers = [];
         for (let x of data) {
-            let publisher = new Publisher(x["id"], x["name"]);
+            const publisher = new Publisher(x["id"], x["name"]);
             this.allPublishers.push(publisher);
         }
         this.displayList();
@@ -28,7 +28,7 @@ class PublisherList {
         $(btn).html(
             '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...'
         );
-        let self = this;
+        const self = this;
         $.getJSON("/publishers/", function (data) {
             self.setContent(data["publishers"]);
         })
@@ -46,8 +46,8 @@ class PublisherList {
     }
 
     addPublisher() {
-        let publisherName = $("#publisher_name").val();
-        let self = this;
+        const publisherName = $("#publisher_name").val();
+        const self = this;
         $.ajax({
             method: "PUSH",
             url: "/publisher/",
@@ -66,9 +66,9 @@ class PublisherList {
     }
 
     updatePublisher() {
-        let publisherID = $("#publisher_id").val();
-        let publisherName = $("#publisher_name").val();
-        let self = this;
+        const publisherID = $("#publisher_id").val();
+        const publisherName = $("#publisher_name").val();
+        const self = this;
         $.ajax({
             method: "PUT",
             url: "/publisher/",
@@ -87,8 +87,8 @@ class PublisherList {
     }
 
     deletePublisher() {
-        let publisherID = $("#publisher_id").val();
-        let self = this;
+        const publisherID = $("#publisher_id").val();
+        const self = this;
         $.ajax({
             method: "DELETE",
             url: "/publisher/?" + $.param({ "id": publisherID }),
@@ -113,8 +113,8 @@ class PublisherList {
             '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...'
         );
         // get field values and send to search
-        let publisherName = $("#publisher_name").val();
-        let self = this;
+        const publisherName = $("#publisher_name").val();
+        const self = this;
         $.getJSON("/publishers_search/?name=" + publisherName, function (data) {
             self.setContent(data["publishers"]);
         })
@@ -147,7 +147,7 @@ class PublisherList {
 
     clearPrevHighlight() {
         // clear previous row hightlight if there was one
-        let prevID = $("#publisher_id").val();
+        const prevID = $("#publisher_id").val();
         if (prevID !== "0") {
             // un-highlight row
             $("#publisher" + prevID + " td").each(function () {
@@ -160,7 +160,7 @@ class PublisherList {
     fieldsChanged() {
         const publisherID = $("#publisher_id").val();
         const publisherName = $("#publisher_name").val();
-        $("#btn_search").prop("disabled", (publisherName === ""));
+        $("#btn_show_publisher_books").prop("disabled", (publisherID === "0"));
         $("#btn_add_publisher").prop("disabled", (publisherID !== "0" || publisherName === ""));
         $("#btn_update_publisher").prop("disabled", (publisherID === "0"));
     }
@@ -186,6 +186,7 @@ class PublisherList {
         $("#publisher_name").val(publisher.name);
         // update which buttons are disabled
         $("#btn_add_publisher").prop("disabled", true);
+        $("#btn_show_publisher_books").prop("disabled", false);
         $("#btn_update_publisher").prop("disabled", true); // can't update until user changes something
         $("#btn_delete_publisher").prop("disabled", false);
     }
@@ -229,11 +230,10 @@ $(document).ready(function () {
     $("#btn_view_all_publishers").click(function () {
         gPublisherList.viewAll(this);
     });
-    $("#btn_show_books").click(function () {
-        let publisherID = $("#publisher_id").val();
+    $("#btn_show_publisher_books").click(function () {
+        const publisherID = $("#publisher_id").val();
         if (publisherID !== "") {
-            publisherID = parseInt(publisherID);
-            goPageBook(null, publisherID)
+            goPageBook(null, parseInt(publisherID))
         }
     });
     $("#btn_add_publisher").click(function () {
@@ -252,9 +252,9 @@ $(document).ready(function () {
     $("#publisher_list").delegate('tr', 'click', function () {
         gPublisherList.clearPrevHighlight();
         // fill inputs with values for clicked row
-        let id = parseInt($(this).attr("id").substring(9));
+        const id = parseInt($(this).attr("id").substring(9));
         for (let i = 0; i < gPublisherList.numPublishers; i++) {
-            let publisher = gPublisherList.publisher(i);
+            const publisher = gPublisherList.publisher(i);
             if (publisher['id'] === id) {
                 gPublisherList.fillFieldsFromPublisher(publisher);
                 // highlight row clicked on so user can check they clicked the right one

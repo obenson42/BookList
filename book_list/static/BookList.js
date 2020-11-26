@@ -1,6 +1,6 @@
 function goPageBook(authorID, publisherID) {
     $("#page_books").show("slow");
-    $("#page_editions").show("slow");
+    $("#page_editions").hide("slow");
     $("#page_authors").hide("slow");
     $("#page_publishers").hide("slow");
     $("#link_authors, #link_publishers").removeClass("active");

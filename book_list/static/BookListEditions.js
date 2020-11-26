@@ -1,11 +1,13 @@
 // classes
 class Edition {
-    constructor(id, isbn, pub_date, bookID, publisherID) {
+    constructor(id, isbn, datePublished, bookID, publisherID, bookTitle, publisherName) {
         this.id = id;
         this.isbn = isbn;
-        this.pub_date = pub_date;
+        this.datePublished = datePublished;
         this.bookID = bookID;
         this.publisherID = publisherID;
+        this.bookTitle = bookTitle;
+        this.publisherName = publisherName;
     }
 }
 
@@ -17,7 +19,7 @@ class EditionList {
     setContent(data) {
         this.allEditions = [];
         for (let x of data) {
-            let edition = new Edition(x["id"], x["isbn"], x["date_published"], x["book_id"], x["publisher_id"]);
+            const edition = new Edition(x["id"], x["isbn"], x["date_published"], x["book_id"], x["publisher_id"], x["book_title"], x["publisher_name"]);
             this.allEditions.push(edition);
         }
         this.displayList();
@@ -31,8 +33,9 @@ class EditionList {
         $(btn).html(
             '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...'
         );
+        const bookID = $("#book_id").val();
         const self = this;
-        $.getJSON("/editions/", function (data) {
+        $.getJSON("/editions/?" + $.param({ "book_id": bookID }), function (data) {
             self.setContent(data["editions"]);
         })
             .fail(function () {
@@ -51,11 +54,13 @@ class EditionList {
     addEdition() {
         const editionISBN = $("#edition_isbn").val();
         const editionDatePublished = $("#edition_date_published").val();
-        let self = this;
+        const editionBookID = $("#edition_book_id").val();
+        const editionPublisherID = $("#edition_publisher_id").val();
+        const self = this;
         $.ajax({
             method: "PUSH",
             url: "/edition/",
-            data: { id: 0, isbn: editionISBN, date_published: editionDatePublished },
+            data: { id: 0, isbn: editionISBN, date_published: editionDatePublished, book_id: editionBookID, publisher_id: editionPublisherID },
             dataType: "json"
         })
             .done(function (result) {
@@ -73,11 +78,13 @@ class EditionList {
         const editionID = $("#edition_id").val();
         const editionISBN = $("#edition_isbn").val();
         const editionDatePublished = $("#edition_date_published").val();
+        const editionBookID = $("#edition_book_id").val();
+        const editionPublisherID = $("#edition_publisher_id").val();
         const self = this;
         $.ajax({
             method: "PUT",
             url: "/edition/",
-            data: { id: editionID, isbn: editionISBN, date_published: editionDatePublished },
+            data: { id: editionID, isbn: editionISBN, date_published: editionDatePublished, book_id: editionBookID, publisher_id: editionPublisherID },
             dataType: "json"
         })
             .done(function (result) {
@@ -118,6 +125,9 @@ class EditionList {
         $("#edition_id").val(0);
         $("#edition_isbn").val("");
         $("#edition_date_published").val("");
+        //$("#edition_book_id").val(0);
+        $("#edition_publisher_id").val(0);
+        $("#edition_publisher").val("");
         // disable buttons dependent on a table row having been clicked
         $("#btn_add_edition").prop("disabled", true);
         $("#btn_update_edition").prop("disabled", true);
@@ -126,7 +136,7 @@ class EditionList {
 
     clearPrevHighlight() {
         // clear previous row hightlight if there was one
-        let prevID = $("#edition_id").val();
+        const prevID = $("#edition_id").val();
         if (prevID !== "0") {
             // un-highlight row
             $("#edition" + prevID + " td").each(function () {
@@ -145,6 +155,27 @@ class EditionList {
         $("#btn_update_edition").prop("disabled", (editionID === "0"));
     }
 
+    // get likely author name from db based on first few characters of surname
+    // also update available buttons
+    publisherLookup() {
+        this.fieldsChanged();
+        const editionPublisher = $("#edition_publisher").val();
+        if (editionPublisher.length > 3) {
+            const pos = editionPublisher.length;
+            $.getJSON("/publisher_search/?" + $.param({ "name": editionPublisher }), function (data) {
+                const x = data["publishers"][0];
+                if (x) {
+                    const publisher = new Publisher(x["id"], x["name"]);
+                    $("#edition_publisher_id").val(x.id);
+                    $("#edition_publisher").val(x.name);
+                    $("#edition_publisher").caretTo(pos);
+                }
+            })
+                .fail(function () {
+                    alert("Problem in publisher lookup");
+                });
+        }
+    }
     // JSON to HTML functions
     displayList() {
         let out = "";
@@ -152,7 +183,8 @@ class EditionList {
             const edition = this.allEditions[i];
             out += '<tr id="edition' + edition.id + '">';
             out += '<td>' + edition.isbn + '</td>';
-            out += '<td>' + edition.date_published + '</td>';
+            out += '<td>' + edition.datePublished + '</td>';
+            out += '<td>' + edition.publisherName + '</td>';
             out += '</tr>';
         }
         $("#edition_list").find("tbody").empty();
@@ -165,7 +197,10 @@ class EditionList {
     fillFieldsFromEdition(edition) {
         $("#edition_id").val(edition.id);
         $("#edition_isbn").val(edition.isbn);
-        $("#edition_date_published").val(edition.date_published);
+        $("#edition_date_published").val(edition.datePublished);
+        $("#edition_book_id").val(edition.bookID);
+        $("#edition_publisher_id").val(edition.publisherID);
+        $("#edition_publisher").val(edition.publisherName);
         // update which buttons are disabled
         $("#btn_add_edition").prop("disabled", true);
         $("#btn_update_edition").prop("disabled", true); // can't update until user changes something
@@ -207,6 +242,9 @@ $(document).ready(function () {
     $("#edition_isbn").on("input", function () {
         gEditionList.fieldsChanged();
     });
+    $("#edition_publisher").on("input", function () {
+        gEditionList.publisherLookup();
+    });
     $("#edition_date_published").on("input", function () {
         gEditionList.fieldsChanged();
     });
@@ -230,9 +268,9 @@ $(document).ready(function () {
     $("#edition_list").delegate('tr', 'click', function () {
         gEditionList.clearPrevHighlight();
         // fill inputs with values for clicked row
-        let id = parseInt($(this).attr("id").substring(7));
+        const id = parseInt($(this).attr("id").substring(7));
         for (let i = 0; i < gEditionList.numEditions; i++) {
-            let edition = gEditionList.edition(i);
+            const edition = gEditionList.edition(i);
             if (edition['id'] === id) {
                 gEditionList.fillFieldsFromEdition(edition);
                 // highlight row clicked on so user can check they clicked the right one

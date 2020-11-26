@@ -31,7 +31,7 @@ class Book(db.Model):
     title = Column(Text(), nullable=False)
     year = Column(Integer, nullable=False)
     author_id = Column(Integer, ForeignKey('author.id'))
-    editions = relationship('Edition', backref=backref('edition', lazy=True))
+    editions = relationship('Edition', backref=backref('book', lazy=True))
 
     def jsonify(self):
         json = '{"id":' + str(self.id)
@@ -51,7 +51,7 @@ class Publisher(db.Model):
     __tablename__ = 'publisher'
     id = Column(Integer, primary_key=True)
     name = Column(Text())
-    editions = relationship('Edition') #, backref=backref('edition', lazy=True))
+    editions = relationship('Edition', backref=backref('publisher', lazy=True))
 
     def jsonify(self):
         json = '{"id":' + str(self.id)
@@ -72,10 +72,10 @@ class Edition(db.Model):
 
     def jsonify(self):
         json = '{"id":' + str(self.id)
-        json += ',"date_pub":"' + (str(self.date_pub) if isinstance(self.date_pub, datetime.date) else "") + '"'
+        json += ',"date_published":"' + (str(self.date_pub) if isinstance(self.date_pub, datetime.date) else "") + '"'
         json += ',"isbn":"' + self.isbn + '"'
         json += ',"book_id":' + (str(self.book_id) if isinstance(self.book_id, int) else "0")
-        json += ',"publisher_id":' + (str(self.authpublisher_idor_id) if isinstance(self.publisher_id, int) else "0")
+        json += ',"publisher_id":' + (str(self.publisher_id) if isinstance(self.publisher_id, int) else "0")
         if self.book != None:
             json += ',"book_title":"' + self.book.title + '"'
         if self.publisher != None:

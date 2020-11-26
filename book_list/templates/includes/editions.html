@@ -1,5 +1,5 @@
 {% block content %}
-<div class='row' id="page_editions">
+<div class='row' id="page_editions" style="display:none">
     <form class='col-md-4 col-12 px-sm-1' id="edition_entry">
         <input type='hidden' id='edition_id' value='0' />
         <input type='hidden' id='edition_book_id' value='0' />
@@ -10,8 +10,12 @@
                 <input type='text' class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 edition_field' id='edition_isbn' />
             </div>
             <div class='form-group mb-sm-1 mb-md-3'>
+                <label for='edition_publisher' class='mr-sm-2 mb-0 mb-sm-1'>Publisher</label>
+                <input type='text' class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 edition_field' id='edition_publisher' />
+            </div>
+            <div class='form-group mb-sm-1 mb-md-3'>
                 <label for='edition_date_published' class='mr-sm-2 mb-0 mb-sm-1'>Published</label>
-                <input type='date' class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 author_field' id='edition_date_published' />
+                <input type='date' class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 edition_field' id='edition_date_published' />
             </div>
         </div>
         <div id='controls' class='container-fluid px-4 py-1 bg-light rounded-bottom'>
@@ -29,9 +33,9 @@
         </div>
     </form>
     <table class='table table-hover col-md-8 col-12' id='edition_list'>
-        <thead><tr><th>ISBN</th><th>Published</th></tr></thead>
+        <thead><tr><th>ISBN</th><th>Published</th><th>Publisher</th></tr></thead>
         <tbody>
-            <tr><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td></tr>
         </tbody>
     </table>
 </div>

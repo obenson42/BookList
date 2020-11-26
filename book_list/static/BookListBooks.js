@@ -1,12 +1,12 @@
 // classes
 class Book {
-    constructor(id, title, authorFirstName, authorSurname, year, authorID) {
+    constructor(id, title, year, authorID, authorFirstName, authorSurname) {
         this.id = id;
         this.title = title;
-        this.authorFirstName = authorFirstName;
-        this.authorSurname = authorSurname;
         this.year = year;
         this.authorID = authorID;
+        this.authorFirstName = authorFirstName;
+        this.authorSurname = authorSurname;
     }
 }
 
@@ -18,7 +18,7 @@ class BookList {
     setContent(data) {
         this.allBooks = [];
         for (let x of data) {
-            const book = new Book(x["id"], x["title"], x["author_first_name"], x["author_surname"], x["year"], x["author_id"]);
+            const book = new Book(x["id"], x["title"], x["year"], x["author_id"], x["author_first_name"], x["author_surname"]);
             this.allBooks.push(book);
         }
         this.displayList();
@@ -101,11 +101,11 @@ class BookList {
             });
     }
 
-    deconsteBook() {
+    deleteBook() {
         const bookID = $("#book_id").val();
         const self = this;
         $.ajax({
-            method: "DEconstE",
+            method: "DELETE",
             url: "/book/?" + $.param({ "id": bookID }),
             dataType: "json"
         })
@@ -116,7 +116,7 @@ class BookList {
                 self.viewAll();
             })
             .fail(function () {
-                alert("Problem deconsting book");
+                alert("Problem deleting book");
             });
     }
 
@@ -163,7 +163,7 @@ class BookList {
         $("#btn_search").prop("disabled", true);
         $("#btn_add_book").prop("disabled", true);
         $("#btn_update_book").prop("disabled", true);
-        $("#btn_deconste_book").prop("disabled", true);
+        $("#btn_delete_book").prop("disabled", true);
         // disable link to author page
         $("#link_current_author").removeClass("text-primary");
         $("#link_current_author").addClass("text-muted");
@@ -254,7 +254,9 @@ class BookList {
         $("#book_list").find("tbody").append(out);
         // disable buttons dependent on a table row having been clicked
         $("#btn_update_book").prop("disabled", true);
-        $("#btn_deconste_book").prop("disabled", true);
+        $("#btn_delete_book").prop("disabled", true);
+        // hide editions form
+        $("#page_editions").hide("slow");
     }
 
     fillFieldsFromBook(book) {
@@ -266,10 +268,15 @@ class BookList {
         // update which buttons are disabled
         $("#btn_add_book").prop("disabled", true);
         $("#btn_update_book").prop("disabled", true); // can't update until user changes something
-        $("#btn_deconste_book").prop("disabled", false);
+        $("#btn_delete_book").prop("disabled", false);
         // enable link to author page
         $("#link_current_author").removeClass("text-muted");
         $("#link_current_author").addClass("text-primary");
+        // show editions form
+        $("#page_editions").show("slow");
+        gEditionList.clearForm();
+        $("#edition_book_id").val(book.id);
+        gEditionList.viewAll();
     }
 
     get numBooks() {
@@ -346,8 +353,8 @@ $(document).ready(function () {
     $("#btn_clear_form_book").click(function () {
         gBookList.clearForm();
     });
-    $("#btn_deconste_book").click(function () {
-        gBookList.deconsteBook();
+    $("#btn_delete_book").click(function () {
+        gBookList.deleteBook();
     });
     $("#link_current_author").click(function () {
         let bookID = $("#book_id").val();
@@ -378,21 +385,21 @@ $(document).ready(function () {
     });
 });
 
+// poll the server for any updates since this browser last loaded book list
 function chechForUpdatesBooks() {
     $.getJSON("/last_update_books/", function (data) {
-        clearInterval(gUpdateBooksInterval);
         if(data["last_update"] !== "None") {
             const lastDbUpdate = Date.parse(data["last_update"]);
             if(lastDbUpdate - gLastUpdateBooks > 10) {
+                clearInterval(gUpdateBooksInterval); // so it doesn't get called if this function takes a while
                 gBookList.viewAll();
+                gUpdateBooksInterval = setInterval(chechForUpdatesBooks, 5000); // start the interval again
             }
         }
-        gUpdateBooksInterval = setInterval(chechForUpdatesBooks, 5000);
     })
     .fail(function () {
-        alert("Problem in update check");
         clearInterval(gUpdateBooksInterval);
     });
 }
 var gLastUpdateBooks = Date.now();
-var gUpdateBooksInterval = setInterval(chechForUpdatesBooks, 5000);
+var gUpdateBooksInterval = setInterval(chechForUpdatesBooks, 10000);

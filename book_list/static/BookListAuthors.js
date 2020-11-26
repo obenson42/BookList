@@ -163,9 +163,9 @@ class AuthorList {
         this.fieldsChanged();
         if ($("#author_id").val() !== "0") return;
 
-        let authorFirstName = $("#author_first_name").val();
+        const authorFirstName = $("#author_first_name").val();
         if (authorFirstName.length > 3) {
-            let pos = authorFirstName.length;
+            const pos = authorFirstName.length;
             $.getJSON("/author_search/?" + $.param({ "first_name": authorFirstName, "surname": "" }), function (data) {
                 const x = data["authors"][0];
                 if (x) {
@@ -190,9 +190,9 @@ class AuthorList {
         this.fieldsChanged();
         if ($("#author_id").val() !== "0") return;
 
-        let authorSurname = $("#author_surname").val();
+        const authorSurname = $("#author_surname").val();
         if (authorSurname.length > 3) {
-            let pos = authorSurname.length;
+            const pos = authorSurname.length;
             $.getJSON("/author_search/?" + $.param({ "first_name": "", "surname": authorSurname }), function (data) {
                 const x = data["authors"][0];
                 if (x) {
@@ -215,7 +215,7 @@ class AuthorList {
     displayList() {
         let out = "";
         for (let i = 0; i < this.allAuthors.length; i++) {
-            let author = this.allAuthors[i];
+            const author = this.allAuthors[i];
             out += '<tr id="author' + author.id + '"><td>' + author.surname + '</td><td>' + author.firstName + '</td></tr>';
         }
         $("#author_list").find("tbody").empty();
@@ -254,10 +254,10 @@ class AuthorList {
     }
 
     authorByID(id) {
-        let author = this.allAuthors.find(obj => obj.id === id);
+        const author = this.allAuthors.find(obj => obj.id === id);
         if (author === undefined) {
             // try to load from db
-            let self = this;
+            const self = this;
             this.getAuthorFromDbByID(id).then(function (data) {
                 if (data !== undefined) {
                     author = new Author(data['id'], data['first_name'], data['surname'], data['date_birth'], data['date_death']);
@@ -285,11 +285,11 @@ class AuthorList {
     showAuthor(id) {
         this.clearForm();
         if (id != undefined) {
-            let author = this.authorByID(id);
+            const author = this.authorByID(id);
             if (author !== undefined) {
                 this.fillFieldsFromAuthor(author);
                 // highlight row clicked on so user can check they clicked the right one
-                let row = $("#author" + id);
+                const row = $("#author" + id);
                 $("td", row).each(function () {
                     $(row).css({ backgroundColor: "#f8f9fa" });
                 });
@@ -323,7 +323,7 @@ $(document).ready(function () {
         gAuthorList.view_all(this);
     });
     $("#btn_show_books").click(function () {
-        let authorID = $("#author_id").val();
+        const authorID = $("#author_id").val();
         if (authorID !== "") {
             authorID = parseInt(authorID);
             goPageBook(authorID)
@@ -345,9 +345,9 @@ $(document).ready(function () {
     $("#author_list").delegate('tr', 'click', function () {
         gAuthorList.clearPrevHighlight();
         // fill inputs with values for clicked row
-        let id = parseInt($(this).attr("id").substring(6));
+        const id = parseInt($(this).attr("id").substring(6));
         for (let i = 0; i < gAuthorList.numAuthors; i++) {
-            let author = gAuthorList.author(i);
+            const author = gAuthorList.author(i);
             if (author.id === id) {
                 gAuthorList.fillFieldsFromAuthor(author);
                 // highlight row clicked on so user can check they clicked the right one

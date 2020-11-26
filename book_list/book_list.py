@@ -171,7 +171,7 @@ def get_books_by_publisher():
     publisher_id = request.args.get('publisher_id')
     publisher_id_num = int(publisher_id) if (isinstance(publisher_id, str) and (publisher_id != "")) else 0
     if publisher_id_num > 0:
-        books = Book.query.join(Book.edition).join(Edition.publisher).filter(Publisher.id == publisher_id_num)
+        books = db.session.query(Book).join(Edition, Edition.book_id==Book.id).join(Publisher, Publisher.id == Edition.publisher_id).filter(Publisher.id == publisher_id_num)
         json = jsonifyList(books, "books")
         headers = {"Content-Type": "application/json"}
         return make_response(
@@ -179,7 +179,7 @@ def get_books_by_publisher():
             200,
             headers)
     else:
-        json = '{"author_id":' + author_id + ', "operation":"get", "status":"fail"}'
+        json = '{"author_id":' + publisher_id + ', "operation":"get", "status":"fail"}'
         headers = {"Content-Type": "application/json"}
         return make_response(
             json,
@@ -378,8 +378,8 @@ def publisher_get():
         headers)
 
 # find publishers by title, year or author name
-@bp.route('/publishers_search/', methods=['GET'])
-def publishers_search():
+@bp.route('/publisher_search/', methods=['GET'])
+def publisher_search():
     name = request.args.get('name')
     if name != "":
         name = "%" + name + "%"
@@ -401,10 +401,13 @@ def publishers_search():
             headers)
 
 ## edition routes
-# get all editions (incl author)
+# get all editions for given book
 @bp.route('/editions/', methods=['GET'])
 def get_all_editions():
-    editions = Edition.query.all()
+    book_id = request.args.get('book_id')
+    book_id_num = int(book_id) if (isinstance(book_id, str) and (book_id != "")) else 0
+    editions = Edition.query.filter(Edition.book_id==book_id_num)
+    #editions = Edition.query.all()
     json = jsonifyList(editions, "editions")
     headers = {"Content-Type": "application/json"}
     return make_response(
@@ -415,10 +418,12 @@ def get_all_editions():
 # create new edition
 @bp.route('/edition/', methods=['PUSH'])
 def edition_create():
-    date_pub = datetime.date.fromisoformat(request.form.get('date_pub')) if request.form.get('date_pub') != "" else None
+    date_pub = datetime.date.fromisoformat(request.form.get('date_published')) if request.form.get('date_published') != "" else None
     isbn = request.form.get('isbn')
+    book_id = request.form.get('book_id')
+    publisher_id = request.form.get('publisher_id')
     # add the edition
-    db.session.add(Edition(isbn=isbn, date_pub=date_pub))
+    db.session.add(Edition(isbn=isbn, date_pub=date_pub, book_id=book_id, publisher_id=publisher_id))
     db.session.commit()
     json = '{"operation":"create edition", "status":"success"}'
     headers = {"Content-Type": "application/json"}
@@ -432,7 +437,7 @@ def edition_create():
 def edition_update():
     id = request.form.get('id')
     id_num = int(id) if (isinstance(id, str) and (id != "")) else 0
-    date_pub = datetime.date.fromisoformat(request.form.get('date_pub')) if request.form.get('date_pub') != "" else None
+    date_pub = datetime.date.fromisoformat(request.form.get('date_published')) if request.form.get('date_published') != "" else None
     isbn = request.form.get('isbn')
     book_id = request.form.get('book_id')
     publisher_id = request.form.get('publisher_id')
