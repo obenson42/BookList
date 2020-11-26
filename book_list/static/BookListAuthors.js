@@ -254,7 +254,7 @@ class AuthorList {
     }
 
     authorByID(id) {
-        const author = this.allAuthors.find(obj => obj.id === id);
+        let author = this.allAuthors.find(obj => obj.id === id);
         if (author === undefined) {
             // try to load from db
             const self = this;
@@ -323,7 +323,7 @@ $(document).ready(function () {
         gAuthorList.view_all(this);
     });
     $("#btn_show_books").click(function () {
-        const authorID = $("#author_id").val();
+        let authorID = $("#author_id").val();
         if (authorID !== "") {
             authorID = parseInt(authorID);
             goPageBook(authorID)
