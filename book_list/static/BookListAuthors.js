@@ -49,16 +49,15 @@ class AuthorList {
     }
 
     addAuthor() {
-        const authorFirstName = $("#author_first_name").val();
-        const authorSurname = $("#author_surname").val();
-        const authorPhotoUrl = $("#author_photo_url").val();
+        const authorFirstName = sanitize($("#author_first_name").val());
+        const authorSurname = sanitize($("#author_surname").val());
         const authorDateBirth = $("#author_date_birth").val();
         const authorDateDeath = $("#author_date_death").val();
         const self = this;
         $.ajax({
             method: "PUSH",
             url: "/author/",
-            data: { id: 0, first_name: authorFirstName, surname: authorSurname, photo_url: authorPhotoUrl, date_birth: authorDateBirth, date_death: authorDateDeath },
+            data: { id: 0, first_name: authorFirstName, surname: authorSurname, date_birth: authorDateBirth, date_death: authorDateDeath },
             dataType: "json"
         })
             .done(function (result) {
@@ -74,16 +73,15 @@ class AuthorList {
 
     updateAuthor() {
         const authorID = $("#author_id").val();
-        const authorFirstName = $("#author_first_name").val();
-        const authorSurname = $("#author_surname").val();
-        const authorPhotoUrl = $("#author_photo_url").val();
+        const authorFirstName = sanitize($("#author_first_name").val());
+        const authorSurname = sanitize($("#author_surname").val());
         const authorDateBirth = $("#author_date_birth").val();
         const authorDateDeath = $("#author_date_death").val();
         const self = this;
         $.ajax({
             method: "PUT",
             url: "/author/",
-            data: { id: authorID, first_name: authorFirstName, surname: authorSurname, photo_url: authorPhotoUrl, date_birth: authorDateBirth, date_death: authorDateDeath },
+            data: { id: authorID, first_name: authorFirstName, surname: authorSurname, date_birth: authorDateBirth, date_death: authorDateDeath },
             dataType: "json"
         })
             .done(function (result) {
@@ -124,7 +122,6 @@ class AuthorList {
         $("#author_id").val(0);
         $("#author_first_name").val("");
         $("#author_surname").val("");
-        $("#author_photo_url").val("");
         $("#author_date_birth").val("");
         $("#author_date_death").val("");
         // disable buttons dependent on a table row having been clicked
@@ -149,7 +146,6 @@ class AuthorList {
         const authorID = $("#author_id").val();
         const authorFirstName = $("#author_first_name").val();
         const authorSurname = $("#author_surname").val();
-        const authorPhotoUrl = $("#author_photo_url").val();
         const authorDateBirth = $("#author_date_birth").val();
         const authorDateDeath = $("#author_date_death").val();
         $("#btn_add_author").prop("disabled", (authorID !== "0" || authorFirstName === "" || authorSurname === ""));
@@ -163,7 +159,7 @@ class AuthorList {
         this.fieldsChanged();
         if ($("#author_id").val() !== "0") return;
 
-        const authorFirstName = $("#author_first_name").val();
+        const authorFirstName = sanitize($("#author_first_name").val());
         if (authorFirstName.length > 3) {
             const pos = authorFirstName.length;
             $.getJSON("/author_search/?" + $.param({ "first_name": authorFirstName, "surname": "" }), function (data) {
@@ -190,7 +186,7 @@ class AuthorList {
         this.fieldsChanged();
         if ($("#author_id").val() !== "0") return;
 
-        const authorSurname = $("#author_surname").val();
+        const authorSurname = sanitize($("#author_surname").val());
         if (authorSurname.length > 3) {
             const pos = authorSurname.length;
             $.getJSON("/author_search/?" + $.param({ "first_name": "", "surname": authorSurname }), function (data) {
@@ -232,12 +228,8 @@ class AuthorList {
         $("#author_id").val(author.id);
         $("#author_first_name").val(author.firstName);
         $("#author_surname").val(author.surname);
-        $("#author_photo_url").val(author.photo_url);
         $("#author_date_birth").val(author.date_birth);
         $("#author_date_death").val(author.date_death);
-        if (author.photo_url !== undefined && author.photo_url !== "") {
-            //$("author_photo").add("<img src='" + author.photo_url + "' />")
-        }
         // update which buttons are disabled
         $("#btn_add_author").prop("disabled", true);
         $("#btn_update_author").prop("disabled", true); // can't update until user changes something
@@ -308,9 +300,6 @@ $(document).ready(function () {
     });
     $("#author_surname").on("input", function () {
         gAuthorList.authorLookupSurname();
-    });
-    $("#author_photo_url").on("input", function () {
-        gAuthorList.fieldsChanged();
     });
     $("#author_date_birth").on("input", function () {
         gAuthorList.fieldsChanged();

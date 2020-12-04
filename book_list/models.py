@@ -2,6 +2,7 @@ from sqlalchemy import create_engine, Column, Integer, String, Sequence, Text, D
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, backref
 import datetime
+import html
 from book_list import db
 
 class Author(db.Model):
@@ -15,8 +16,8 @@ class Author(db.Model):
 
     def jsonify(self):
         json = '{"id":' + str(self.id)
-        json += ',"first_name":"' + self.first_name + '"'
-        json += ',"surname":"' + self.surname + '"'
+        json += ',"first_name":"' + html.escape(self.first_name) + '"'
+        json += ',"surname":"' + html.escape(self.surname) + '"'
         json += ',"date_birth":"' + (str(self.date_birth) if isinstance(self.date_birth, datetime.date) else "") + '"'
         json += ',"date_death":"' + (str(self.date_death) if isinstance(self.date_death, datetime.date) else "") + '"'
         json += '}'
@@ -35,7 +36,7 @@ class Book(db.Model):
 
     def jsonify(self):
         json = '{"id":' + str(self.id)
-        json += ',"title":"' + self.title + '"'
+        json += ',"title":"' + html.escape(self.title) + '"'
         json += ',"year":' + str(self.year)
         json += ',"author_id":' + (str(self.author_id) if isinstance(self.author_id, int) else "0")
         if self.author != None:
@@ -55,7 +56,7 @@ class Publisher(db.Model):
 
     def jsonify(self):
         json = '{"id":' + str(self.id)
-        json += ',"name":"' + self.name + '"'
+        json += ',"name":"' + html.escape(self.name) + '"'
         json += '}'
         return json
 
@@ -73,7 +74,7 @@ class Edition(db.Model):
     def jsonify(self):
         json = '{"id":' + str(self.id)
         json += ',"date_published":"' + (str(self.date_pub) if isinstance(self.date_pub, datetime.date) else "") + '"'
-        json += ',"isbn":"' + self.isbn + '"'
+        json += ',"isbn":"' + html.escape(self.isbn) + '"'
         json += ',"book_id":' + (str(self.book_id) if isinstance(self.book_id, int) else "0")
         json += ',"publisher_id":' + (str(self.publisher_id) if isinstance(self.publisher_id, int) else "0")
         if self.book != None:

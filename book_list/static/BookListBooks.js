@@ -55,10 +55,11 @@ class BookList {
     }
 
     addBook() {
-        const bookTitle = $("#book_title").val();
-        const bookAuthorFirstName = $("#book_author_first_name").val();
-        const bookAuthorSurname = $("#book_author_surname").val();
-        const bookYear = $("#book_year").val();
+        const bookTitle = sanitize($("#book_title").val());
+        const bookAuthorFirstName = sanitize($("#book_author_first_name").val());
+        const bookAuthorSurname = sanitize($("#book_author_surname").val());
+        const bookYear = sanitize($("#book_year").val());
+        // add book
         const self = this;
         $.ajax({
             method: "PUSH",
@@ -79,10 +80,10 @@ class BookList {
 
     updateBook() {
         const bookID = $("#book_id").val();
-        const bookTitle = $("#book_title").val();
-        const bookAuthorFirstName = $("#book_author_first_name").val();
-        const bookAuthorSurname = $("#book_author_surname").val();
-        const bookYear = $("#book_year").val();
+        const bookTitle = sanitize($("#book_title").val());
+        const bookAuthorFirstName = sanitize($("#book_author_first_name").val());
+        const bookAuthorSurname = sanitize($("#book_author_surname").val());
+        const bookYear = sanitize($("#book_year").val());
         const self = this;
         $.ajax({
             method: "PUT",
@@ -128,10 +129,10 @@ class BookList {
             '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...'
         );
         // get field values and send to search
-        const bookTitle = $("#book_title").val();
-        const bookAuthorFirstName = $("#book_author_first_name").val();
-        const bookAuthorSurname = $("#book_author_surname").val();
-        const bookYear = $("#book_year").val();
+        const bookTitle = sanitize($("#book_title").val());
+        const bookAuthorFirstName = sanitize($("#book_author_first_name").val());
+        const bookAuthorSurname = sanitize($("#book_author_surname").val());
+        const bookYear = sanitize($("#book_year").val());
         const self = this;
         $.getJSON("/books_search/?title=" + bookTitle + "&author_first_name=" + bookAuthorFirstName + "&author_surname=" + bookAuthorSurname + "&year=" + bookYear, function (data) {
             self.setContent(data["books"]);
@@ -197,7 +198,7 @@ class BookList {
     // also update available buttons
     authorLookupFirstName() {
         this.fieldsChanged();
-        const bookAuthorFirstName = $("#book_author_first_name").val();
+        const bookAuthorFirstName = sanitize($("#book_author_first_name").val());
         if (bookAuthorFirstName.length > 3) {
             const pos = bookAuthorFirstName.length;
             $.getJSON("/author_search/?" + $.param({ "first_name": bookAuthorFirstName, "surname": "" }), function (data) {
@@ -220,7 +221,7 @@ class BookList {
     // also update available buttons
     authorLookupSurname() {
         this.fieldsChanged();
-        const bookAuthorSurname = $("#book_author_surname").val();
+        const bookAuthorSurname = sanitize($("#book_author_surname").val());
         if (bookAuthorSurname.length > 3) {
             const pos = bookAuthorSurname.length;
             $.getJSON("/author_search/?" + $.param({ "first_name": "", "surname": bookAuthorSurname }), function (data) {
@@ -393,7 +394,7 @@ function chechForUpdatesBooks() {
             if(lastDbUpdate - gLastUpdateBooks > 10) {
                 clearInterval(gUpdateBooksInterval); // so it doesn't get called if this function takes a while
                 gBookList.viewAll();
-                gUpdateBooksInterval = setInterval(chechForUpdatesBooks, 5000); // start the interval again
+                gUpdateBooksInterval = setInterval(chechForUpdatesBooks, gPollingInterval); // start the interval again
             }
         }
     })
@@ -401,5 +402,6 @@ function chechForUpdatesBooks() {
         clearInterval(gUpdateBooksInterval);
     });
 }
+var gPollingInterval = 60000;
 var gLastUpdateBooks = Date.now();
-var gUpdateBooksInterval = setInterval(chechForUpdatesBooks, 10000);
+var gUpdateBooksInterval = setInterval(chechForUpdatesBooks, gPollingInterval);

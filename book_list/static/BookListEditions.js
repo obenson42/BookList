@@ -52,7 +52,7 @@ class EditionList {
     }
 
     addEdition() {
-        const editionISBN = $("#edition_isbn").val();
+        const editionISBN = sanitize($("#edition_isbn").val());
         const editionDatePublished = $("#edition_date_published").val();
         const editionBookID = $("#edition_book_id").val();
         const editionPublisherID = $("#edition_publisher_id").val();
@@ -76,7 +76,7 @@ class EditionList {
 
     updateEdition() {
         const editionID = $("#edition_id").val();
-        const editionISBN = $("#edition_isbn").val();
+        const editionISBN = sanitize($("#edition_isbn").val());
         const editionDatePublished = $("#edition_date_published").val();
         const editionBookID = $("#edition_book_id").val();
         const editionPublisherID = $("#edition_publisher_id").val();
@@ -159,7 +159,7 @@ class EditionList {
     // also update available buttons
     publisherLookup() {
         this.fieldsChanged();
-        const editionPublisher = $("#edition_publisher").val();
+        const editionPublisher = sanitize($("#edition_publisher").val());
         if (editionPublisher.length > 3) {
             const pos = editionPublisher.length;
             $.getJSON("/publisher_search/?" + $.param({ "name": editionPublisher }), function (data) {

@@ -46,7 +46,7 @@ class PublisherList {
     }
 
     addPublisher() {
-        const publisherName = $("#publisher_name").val();
+        const publisherName = sanitize($("#publisher_name").val());
         const self = this;
         $.ajax({
             method: "PUSH",
@@ -67,7 +67,7 @@ class PublisherList {
 
     updatePublisher() {
         const publisherID = $("#publisher_id").val();
-        const publisherName = $("#publisher_name").val();
+        const publisherName = sanitize($("#publisher_name").val());
         const self = this;
         $.ajax({
             method: "PUT",
@@ -113,7 +113,7 @@ class PublisherList {
             '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...'
         );
         // get field values and send to search
-        const publisherName = $("#publisher_name").val();
+        const publisherName = sanitize($("#publisher_name").val());
         const self = this;
         $.getJSON("/publishers_search/?name=" + publisherName, function (data) {
             self.setContent(data["publishers"]);

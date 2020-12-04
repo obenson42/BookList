@@ -5,11 +5,11 @@
         <div id='fields' class='px-1 px-sm-2 px-md-3 px-lg-4 py-2 bg-light rounded-top'>
             <div class='form-group mb-1 mb-md-3'>
                 <label for='author_first_name' class='mr-sm-2 mb-0 mb-sm-1'>First Name(s)</label>
-                <input type='text' class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 author_field' id='author_first_name' />
+                <input type='text' class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 author_field' id='author_first_name' pattern='[A-Za-z\s]+' />
             </div>
             <div class='form-group mb-1 mb-md-3'>
                 <label for='author_surname' class='mr-sm-2 mb-0 mb-sm-1'>Surname</label>
-                <input type='text' class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 author_field' id='author_surname' />
+                <input type='text' class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 author_field' id='author_surname' required pattern='[A-Za-z\s]+' />
             </div>
             <div class='form-group mb-sm-1 mb-md-3'>
                 <label for='author_date_birth' class='mr-sm-2 mb-0 mb-sm-1'>Born</label>
