@@ -5,6 +5,12 @@ import datetime
 import html
 from book_list import db
 
+class User(db.Model):
+    __tablename__ = 'user_stuff'
+    id = Column(Integer, primary_key=True)
+    username = Column(Text, unique=True, nullable=False)
+    password = Column(Text, nullable=False)
+
 class Author(db.Model):
     __tablename__ = 'author'
     id = Column(Integer, primary_key=True)

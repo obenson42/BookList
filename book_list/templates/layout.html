@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Book List</title>
+    <title>{% block title %}{% endblock %} - Book List</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
@@ -18,6 +18,7 @@
 <body>
     <header class="container-fluid bg-primary">
         <h1 class="text-light pb-1">Simple Book List Web App</h1>
+        {% block header %}{% endblock %}
     </header>
     {% for message in get_flashed_messages() %}
       <div class="alert alert-danger">
@@ -25,10 +26,21 @@
       </div>
     {% endfor %}
     <nav>
+        {% if g.user %}
         <ul class="nav nav-tabs">
             <li class="nav-item"><a class="nav-link active" href="#" id="link_books">Books</a></li>
             <li class="nav-item"><a class="nav-link" href="#" id="link_authors">Authors</a></li>
             <li class="nav-item"><a class="nav-link" href="#" id="link_publishers">Publishers</a></li>
+        </ul>
+        {% endif %}
+        <ul class="nav nav-tabs" id="login">
+            {% if g.user %}
+                <li class="nav-item"><span>{{ g.user['username'] }}</span></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}" id="link_logout">Log Out</a></li>
+            {% else %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}" id="link_register">Register</a>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}" id="link_login">Log In</a>
+            {% endif %}
         </ul>
     </nav>
     {%block content%}
