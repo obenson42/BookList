@@ -1,15 +1,31 @@
 from sqlalchemy import create_engine, Column, Integer, String, Sequence, Text, Date,PrimaryKeyConstraint, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, backref
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 import html
-from book_list import db
+from app import db, login
 
-class User(db.Model):
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
+class User(UserMixin, db.Model):
     __tablename__ = 'user_stuff'
     id = Column(Integer, primary_key=True)
-    username = Column(Text, unique=True, nullable=False)
-    password = Column(Text, nullable=False)
+    username = Column(String(64), index=True, unique=True)
+    email = Column(String(128), index=True, unique=True)
+    password = Column(String(128), nullable=False)
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+
+def __repr__(self):
+        return '<User {}>'.format(self.username)
 
 class Author(db.Model):
     __tablename__ = 'author'

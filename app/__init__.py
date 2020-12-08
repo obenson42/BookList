@@ -1,39 +1,32 @@
 import os
 from flask import Flask
-
+from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_caching import Cache
 
+from config import Config
+
+login = LoginManager()
 db = SQLAlchemy()
 migrate = Migrate()
 cache = Cache()
 
-def create_app(test_config=None):
-    app=Flask(__name__)
-    app.config.from_mapping(
-        SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev_key',
-        SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-            'sqlite:///' + os.path.join(app.instance_path, 'book_list.sqlite'),
-        SQLALCHEMY_TRACK_MODIFICATIONS = False
-    )
+def create_app(config_class=Config):
+    app = Flask(__name__)
+    app.config.from_object(config_class)
+    
+    login.init_app(app)
+    login.login_view = 'auth.login'
 
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        # load the test config if passed in
-        app.config.from_mapping(test_config)
-        
     db.init_app(app)
     migrate.init_app(app, db)
 
-    from . import auth
-    app.register_blueprint(auth.bp)
+    from app.auth import bp as auth_bp
+    app.register_blueprint(auth_bp, url_prefix='/auth')
 
-    from . import models
-    from . import book_list
-    app.register_blueprint(book_list.bp)
+    from app import routes, models
+    app.register_blueprint(routes.bp)
 
     cache_servers = os.environ.get('MEMCACHIER_SERVERS')
     if cache_servers == None:

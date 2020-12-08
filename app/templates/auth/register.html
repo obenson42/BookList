@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <span>{% block title %}Register{% endblock %}</span>
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <form action="" method="post" class='col-md-4 col-12 px-sm-1'>
+        {{ form.hidden_tag() }}
+        <div id='fields' class='px-1 px-sm-2 px-md-3 px-lg-4 py-2 bg-light rounded-top'>
+          <div class='form-group mb-1 mb-md-3'>
+            {{ form.username.label(class='mr-sm-2 mb-0 mb-sm-1') }}<br>
+              {{ form.username(size=32, class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 book_field') }}<br>
+              {% for error in form.username.errors %}
+              <span style="color: red;">[{{ error }}]</span>
+              {% endfor %}
+          </div>
+          <div class='form-group mb-1 mb-md-3'>
+            {{ form.email.label(class='mr-sm-2 mb-0 mb-sm-1') }}<br>
+              {{ form.email(size=64, class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 book_field') }}<br>
+              {% for error in form.email.errors %}
+              <span style="color: red;">[{{ error }}]</span>
+              {% endfor %}
+          </div>
+          <div class='form-group mb-1 mb-md-3'>
+            {{ form.password.label(class='mr-sm-2 mb-0 mb-sm-1') }}<br>
+              {{ form.password(size=32, class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 book_field') }}<br>
+              {% for error in form.password.errors %}
+              <span style="color: red;">[{{ error }}]</span>
+              {% endfor %}
+          </div>
+          <div class='form-group mb-1 mb-md-3'>
+            {{ form.password2.label(class='mr-sm-2 mb-0 mb-sm-1') }}<br>
+              {{ form.password2(size=32, class='form-control mb-sm-0 mb-2 mr-sm-2 px-sm-1 py-sm-0 book_field') }}<br>
+              {% for error in form.password2.errors %}
+              <span style="color: red;">[{{ error }}]</span>
+              {% endfor %}
+          </div>
+          <div id='submit'>
+            {{ form.submit(class='btn btn-outline-primary btn-sm mt-1') }}
+          </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

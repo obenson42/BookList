@@ -2,9 +2,9 @@ from flask import make_response
 from sqlalchemy import or_
 import datetime
 
-from book_list.models import Author, Book, Publisher, Edition
-from book_list.forms import BookForm
-from book_list.utilities import jsonifyList, get_author_by_name
+from app.models import Author, Book, Publisher, Edition
+from app.forms import BookForm
+from app.utilities import jsonifyList, get_author_by_name
 
 class BooksDB:
     """ class to handle requests from api for books """
@@ -14,6 +14,7 @@ class BooksDB:
         self.cache = cache
         self.headers = {"Content-Type": "application/json"}
         self.return_code_success = 200
+        self.return_code_created = 201
         self.return_code_fail = 500
         self.return_code_not_found = 404
 
@@ -54,7 +55,7 @@ class BooksDB:
         json = '{"operation":"create book", "status":"success"}'
         return make_response(
             json,
-            self.return_code_success,
+            self.return_code_created,
             self.headers)
 
     # update existing book => JSON dictionary with success or fail status

@@ -1,8 +1,8 @@
 from sqlalchemy import or_
 
-from book_list import db, cache
+from app import db, cache
 
-from book_list.models import Author, Book, Publisher, Edition
+from app.models import Author, Book, Publisher, Edition
 
 # find an author by name, create if it doesn't exist
 def get_author_by_name(first_name, surname, create):

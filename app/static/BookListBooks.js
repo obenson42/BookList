@@ -168,6 +168,8 @@ class BookList {
         // disable link to author page
         $("#link_current_author").removeClass("text-primary");
         $("#link_current_author").addClass("text-muted");
+        // hide editions page
+        $("#page_editions").hide("slow");
     }
 
     clearPrevHighlight() {
