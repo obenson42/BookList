@@ -208,7 +208,7 @@ class PublisherList {
         this.clearForm();
         if (authorID !== 0) {
             const self = this;
-            $.getJSON("/publishers_by_author/?" + $.param({ "author_id": authorID }), function (data) {
+            $.getJSON("/publishers_by_author/" + authorID, function (data) {
                 self.setContent(data["publishers"]);
             })
                 .fail(function () {

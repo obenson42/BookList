@@ -299,7 +299,7 @@ class BookList {
         this.clearForm();
         if (authorID !== 0) {
             const self = this;
-            $.getJSON("/books_by_author/?" + $.param({ "author_id": authorID }), function (data) {
+            $.getJSON("/books_by_author/" + authorID, function (data) {
                 self.setContent(data["books"]);
             })
                 .fail(function () {
@@ -313,7 +313,7 @@ class BookList {
         this.clearForm();
         if (publisherID !== 0) {
             const self = this;
-            $.getJSON("/books_by_publisher/?" + $.param({ "publisher_id": publisherID }), function (data) {
+            $.getJSON("/books_by_publisher/" + publisherID, function (data) {
                 self.setContent(data["books"]);
             })
                 .fail(function () {

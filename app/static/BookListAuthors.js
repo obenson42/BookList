@@ -265,7 +265,7 @@ class AuthorList {
     // internal only
     getAuthorFromDbByID(id) {
         if (id !== undefined) {
-            return $.getJSON("/author/?" + $.param({ "id": id }))
+            return $.getJSON("/author/" + id)
                 .fail(function () {
                     alert("Problem in author lookup by id=" + id);
                 });

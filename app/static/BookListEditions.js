@@ -35,7 +35,7 @@ class EditionList {
         );
         const bookID = $("#book_id").val();
         const self = this;
-        $.getJSON("/editions/?" + $.param({ "book_id": bookID }), function (data) {
+        $.getJSON("/editions/" + bookID, function (data) {
             self.setContent(data["editions"]);
         })
             .fail(function () {
@@ -224,7 +224,7 @@ class EditionList {
         this.clearForm();
         if (publisherID !== 0) {
             const self = this;
-            $.getJSON("/editions_by_publisher/?" + $.param({ "publisher_id": publisherID }), function (data) {
+            $.getJSON("/editions_by_publisher/" + publisherID, function (data) {
                 self.setContent(data["editions"]);
             })
                 .fail(function () {

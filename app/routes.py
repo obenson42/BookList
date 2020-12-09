@@ -6,6 +6,8 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, make_response, request, session, url_for, send_from_directory
 )
 from flask_login import login_required
+from flask_cors import CORS
+
 from sqlalchemy import or_
 import datetime
 
@@ -57,12 +59,10 @@ def book_update():
     return booksDB.update(form)
  
 # delete existing book
-@bp.route('/book/', methods=['DELETE'])
+@bp.route('/book/<int:id>', methods=['DELETE'])
 @login_required
-def book_delete():
-    id = request.args.get('id')
-    id_num = int(id) if (isinstance(id, str) and (id != "")) else 0
-    return booksDB.delete(id_num)
+def book_delete(id):
+    return booksDB.delete(id)
 
 # find books by title, year or author name
 @bp.route('/books_search/', methods=['GET'])
@@ -72,20 +72,16 @@ def books_search():
     return booksDB.search(form)
 
 # find books by author_id
-@bp.route('/books_by_author/', methods=['GET'])
+@bp.route('/books_by_author/<int:author_id>', methods=['GET'])
 @login_required
-def get_books_by_author():
-    author_id = request.args.get('author_id')
-    author_id_num = int(author_id) if (isinstance(author_id, str) and (author_id != "")) else 0
-    return booksDB.get_by_author(author_id_num)
+def get_books_by_author(author_id):
+    return booksDB.get_by_author(author_id)
 
 # find books by publisher_id
-@bp.route('/books_by_publisher/', methods=['GET'])
+@bp.route('/books_by_publisher/<int:publisher_id>', methods=['GET'])
 @login_required
-def get_books_by_publisher():
-    publisher_id = request.args.get('publisher_id')
-    publisher_id_num = int(publisher_id) if (isinstance(publisher_id, str) and (publisher_id != "")) else 0
-    return booksDB.get_by_publisher(publisher_id_num)
+def get_books_by_publisher(publisher_id):
+    return booksDB.get_by_publisher(publisher_id)
 
 ## author routes
 # get all authors
@@ -108,20 +104,16 @@ def author_update():
     form = AuthorForm(request.form)
     return authorsDB.update(form)
 
-@bp.route('/author/', methods=['DELETE'])
+@bp.route('/author/<int:id>', methods=['DELETE'])
 @login_required
-def author_delete():
-    id = request.args.get('id')
-    id_num = int(id) if (isinstance(id, str) and (id != "")) else 0
-    return authorsDB.delete(id_num)
+def author_delete(id):
+    return authorsDB.delete(id)
     
 # get specified author
-@bp.route('/author/', methods=['GET'])
+@bp.route('/author/<int:id>', methods=['GET'])
 @login_required
-def author_get():
-    id = request.args.get('id')
-    id_num = int(id) if (isinstance(id, str) and (id != "")) else 0
-    return authorsDB.get(id_num)
+def author_get(id):
+    return authorsDB.get(id)
 
 # find an author by first name or surname
 @bp.route('/author_search/', methods=['GET'])
@@ -152,19 +144,15 @@ def publisher_update():
     return publishersDB.update(form)
 
 # delete existing publisher
-@bp.route('/publisher/', methods=['DELETE'])
+@bp.route('/publisher/<int:id>', methods=['DELETE'])
 @login_required
-def publisher_delete():
-    id = request.args.get('id')
-    id_num = int(id) if (isinstance(id, str) and (id != "")) else 0
-    return publishersDB.delete(id_num)
+def publisher_delete(id):
+    return publishersDB.delete(id)
 
 # get specified publisher
-@bp.route('/publisher/', methods=['GET'])
+@bp.route('/publisher/<int:id>', methods=['GET'])
 @login_required
-def publisher_get():
-    id = request.args.get('id')
-    id_num = int(id) if (isinstance(id, str) and (id != "")) else 0
+def publisher_get(id):
     return publishersDB.get(id)
 
 # find publishers by title, year or author name
@@ -176,12 +164,10 @@ def publisher_search():
 
 ## edition routes
 # get all editions for given book
-@bp.route('/editions/', methods=['GET'])
+@bp.route('/editions/<int:book_id>', methods=['GET'])
 @login_required
-def get_all_editions():
-    book_id = request.args.get('book_id')
-    book_id_num = int(book_id) if (isinstance(book_id, str) and (book_id != "")) else 0
-    return editionsDB.get_all(book_id_num)
+def get_all_editions(book_id):
+    return editionsDB.get_all(book_id)
 
 # create new edition
 @bp.route('/edition/', methods=['PUSH'])
@@ -198,20 +184,16 @@ def edition_update():
     return editionsDB.update(form)
 
 # delete existing edition
-@bp.route('/edition/', methods=['DELETE'])
+@bp.route('/edition/<int:id>', methods=['DELETE'])
 @login_required
-def edition_delete():
-    id = request.args.get('id')
-    id_num = int(id) if (isinstance(id, str) and (id != "")) else 0
-    return editionsDB.delete(id_num)
+def edition_delete(id):
+    return editionsDB.delete(id)
 
 # get specified edition
-@bp.route('/edition/', methods=['GET'])
+@bp.route('/edition/<int:id>', methods=['GET'])
 @login_required
-def edition_get():
-    id = request.args.get('id')
-    id_num = int(id) if (isinstance(id, str) and (id != "")) else 0
-    return editionsDB.get(id_num)
+def edition_get(id):
+    return editionsDB.get(id)
 
 # find editions by isbn
 @bp.route('/editions_search/', methods=['GET'])
