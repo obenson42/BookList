@@ -6,7 +6,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, make_response, request, session, url_for, send_from_directory
 )
 from flask_login import login_required
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 from sqlalchemy import or_
 import datetime
@@ -40,7 +40,7 @@ def index():
 ## book routes
 # get all books (incl author)
 @bp.route('/books/', methods=['GET'])
-@login_required
+@cross_origin()
 def get_all_books():
     return booksDB.get_all()
 

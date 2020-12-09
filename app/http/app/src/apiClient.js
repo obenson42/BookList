@@ -21,7 +21,7 @@ class APIClient {
   }
 
   getBooks() {
-    return this.perform('get', '/books');
+    return this.perform('get', '/books/');
   }
 
   async perform (method, resource, data) {
