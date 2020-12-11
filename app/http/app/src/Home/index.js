@@ -5,7 +5,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Grid from '@material-ui/core/Grid';
 
-import BookList from "../BookList"
+import Book from "../Book"
 import APIClient from '../apiClient'
 
 const styles = theme => ({
@@ -33,7 +33,7 @@ class Home extends React.Component {
     const accessToken = ""; // await this.props.authService.getAccessToken()
     this.apiClient = new APIClient(accessToken);
     this.apiClient.getBooks().then((data) =>
-      this.setState({...this.state, books: data})
+      this.setState({...this.state, books: data["books"]})
     );
   }
 
@@ -46,34 +46,6 @@ class Home extends React.Component {
   };
 
   resetBooks = books => this.setState({ ...this.state, books })
-
-  isBook = book => this.state.books.find(b => b.id === book.id)
-    onBook = (book) => {
-      this.updateBackend(book);
-  }
-
-  updateBackend = (book) => {
-    if (this.isBook(book)) {
-      this.apiClient.deleteBook(book);
-    } else {
-      this.apiClient.createBook(book);
-    }
-    this.updateState(book);
-  }
-
-  updateState = (book) => {
-    if (this.isBook(book)) {
-      this.setState({
-        ...this.state,
-        books: this.state.books.filter(b => b.id !== book.id )
-      })
-    } else {
-      this.setState({
-        ...this.state,
-        books: [book, ...this.state.books]
-      })
-    }
-  }
 
   onSearch = (event) => {
     const target = event.target;
@@ -93,7 +65,7 @@ class Home extends React.Component {
     return books.map((book) => {
       return (
         <Grid item xs={12} md={3} key={book.id}>
-          <BookList onBook={this.onBook} isBook={this.isBook(book)} book={book} />
+          <Book onBook={this.onBook} book={book} />
         </Grid>
       );
     })
@@ -120,7 +92,7 @@ class Home extends React.Component {
           onChangeIndex={this.handleTabChangeIndex}
         >
           <Grid container style={{padding: '20px 0'}}>
-            { this.renderBooks(this.state.Books) }
+            { this.renderBooks(this.state.books) }
           </Grid>
         </SwipeableViews>
       </div>
